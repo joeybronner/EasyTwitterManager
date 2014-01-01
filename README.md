@@ -8,8 +8,7 @@ C++ Projet (Master degree @ESGI (Paris))
 
 ### Short description
 
-Automated management of your Twitter account.  retour
-Comming soon..
+Automated management of your Twitter account.  
 
 
 ### Github
