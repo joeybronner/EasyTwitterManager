@@ -51,13 +51,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>C:\Users\Joey Bronner\Google Drive\C++_Workspace\EasyTwitterManager\EasyTwitterManager\libs\libtwitcurl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalDependencies>libcurl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
+      <AdditionalLibraryDirectories>C:\Users\Joey Bronner\Google Drive\C++_Workspace\EasyTwitterManager\EasyTwitterManager\libs\libtwitcurl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -83,6 +84,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="EasyTwitterManager.ico" />
+    <None Include="libs\libtwitcurl\curl\curlbuild.h.cmake" />
+    <None Include="libs\libtwitcurl\curl\curlbuild.h.in" />
+    <None Include="libs\libtwitcurl\curl\Makefile.am" />
+    <None Include="libs\libtwitcurl\curl\Makefile.in" />
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +99,17 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="libs\libtwitcurl\curl\curl.h" />
+    <ClInclude Include="libs\libtwitcurl\curl\curlbuild.h" />
+    <ClInclude Include="libs\libtwitcurl\curl\curlrules.h" />
+    <ClInclude Include="libs\libtwitcurl\curl\curlver.h" />
+    <ClInclude Include="libs\libtwitcurl\curl\easy.h" />
+    <ClInclude Include="libs\libtwitcurl\curl\mprintf.h" />
+    <ClInclude Include="libs\libtwitcurl\curl\multi.h" />
+    <ClInclude Include="libs\libtwitcurl\curl\stdcheaders.h" />
+    <ClInclude Include="libs\libtwitcurl\curl\typecheck-gcc.h" />
+    <ClInclude Include="libs\libtwitcurl\oauthlib.h" />
+    <ClInclude Include="libs\libtwitcurl\twitcurl.h" />
     <ClInclude Include="window_Accueil.h">
       <FileType>CppForm</FileType>
     </ClInclude>

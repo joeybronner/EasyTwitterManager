@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "window_Accueil.h"
+#include "twitcurl.h"
 
 using namespace EasyTwitterManager;
 

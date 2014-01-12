@@ -19,6 +19,18 @@
     <None Include="EasyTwitterManager.ico">
       <Filter>Fichiers de ressources</Filter>
     </None>
+    <None Include="libs\libtwitcurl\curl\curlbuild.h.cmake">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </None>
+    <None Include="libs\libtwitcurl\curl\curlbuild.h.in">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </None>
+    <None Include="libs\libtwitcurl\curl\Makefile.am">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </None>
+    <None Include="libs\libtwitcurl\curl\Makefile.in">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EasyTwitterManager.cpp">
@@ -41,10 +53,48 @@
     <ClInclude Include="window_Accueil.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="libs\libtwitcurl\twitcurl.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\libtwitcurl\oauthlib.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\libtwitcurl\curl\curl.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\libtwitcurl\curl\curlbuild.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\libtwitcurl\curl\curlrules.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\libtwitcurl\curl\curlver.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\libtwitcurl\curl\easy.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\libtwitcurl\curl\mprintf.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\libtwitcurl\curl\multi.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\libtwitcurl\curl\stdcheaders.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\libtwitcurl\curl\typecheck-gcc.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">
       <Filter>Fichiers de ressources</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="window_Accueil.resX">
+      <Filter>Fichiers de ressources</Filter>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
