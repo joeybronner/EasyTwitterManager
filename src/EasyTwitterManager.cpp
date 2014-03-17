@@ -10,16 +10,32 @@ void bonjour()
 	std::cout << "********* Easy Twitter Manager ***********" << std::endl;
 	std::cout << "******************************************" << std::endl;
 
-	std::cout << "\nEcole ESGI (Paris) | Projet C++ | Année scolaire 2013/2014" << std::endl;
+	std::cout << "\nEcole ESGI (Paris) | Projet C++ | Annee scolaire 2013/2014\n" << std::endl;
+}
 
+int menu()
+{
 	std::cout << "\n--Menu--" << std::endl;
 
+	std::cout << "\n   1 - choix 1" << std::endl;
+	std::cout << "   2 - choix 2" << std::endl;
+	std::cout << "   3 - choix 3" << std::endl;
+	std::cout << "   4 - choix 4" << std::endl;
+	std::cout << "   5 - choix 5" << std::endl;
 
+	int response;
+	std::cin >> response; 
+	return response;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	// Message d'accueil
 	bonjour();
+
+	system("PAUSE");
+	int choix;
+	choix = menu();
 	/*
 	// --- Variables ---
 	std::string userName;
@@ -94,8 +110,8 @@ int _tmain(int argc, _TCHAR* argv[])
     std::ifstream oAuthTokenKeyIn;
     std::ifstream oAuthTokenSecretIn;
 
-    oAuthTokenKeyIn.open( "twitterClient_token_key.txt" );
-    oAuthTokenSecretIn.open( "twitterClient_token_secret.txt" );
+    oAuthTokenKeyIn.open( "../txt/twitterClient_token_key.txt" );
+    oAuthTokenSecretIn.open( "../txt/twitterClient_token_secret.txt" );
 
     memset( tmpBuf, 0, 1024 );
     oAuthTokenKeyIn >> tmpBuf;
@@ -163,13 +179,16 @@ int _tmain(int argc, _TCHAR* argv[])
         oAuthTokenKeyOut.clear();
         oAuthTokenSecretOut.clear();
 
+		// Mise a jour des cles d'acces (fichiers txt)
         oAuthTokenKeyOut << myOAuthAccessTokenKey.c_str();
         oAuthTokenSecretOut << myOAuthAccessTokenSecret.c_str();
 
+		// Fermeture des fichiers
         oAuthTokenKeyOut.close();
         oAuthTokenSecretOut.close();
     }
     /* OAuth flow ends */
+	// A ce moment la, CONNEXION ETABLIE
 
     /* Account credentials verification */
     if( twitterObj.accountVerifyCredGet() )
