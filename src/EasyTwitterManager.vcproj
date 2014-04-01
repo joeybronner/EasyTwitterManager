@@ -22,6 +22,7 @@
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
+			ManagedExtensions="4"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -42,12 +43,12 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
+				MinimalRebuild="false"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -64,7 +65,8 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="../lib/"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				AssemblyDebug="1"
+				SubSystem="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -94,7 +96,8 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			CharacterSet="1"
+			CharacterSet="2"
+			ManagedExtensions="4"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -138,9 +141,10 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="../lib/"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				EntryPointSymbol=""
 				TargetMachine="1"
 			/>
 			<Tool
@@ -175,7 +179,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\EasyTwitterManager.cpp"
+				RelativePath=".\affichage.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\apitwitcurl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\codetwitter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\main.cpp"
 				>
 			</File>
 			<File
@@ -205,35 +221,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\include\curl\curl.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\curl\curlbuild.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\curl\curlrules.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\curl\curlver.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\curl\easy.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\curl\mprintf.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\curl\multi.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\oauthlib.h"
+				RelativePath=".\affichage.h"
 				>
 			</File>
 			<File
@@ -241,19 +229,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\include\curl\stdcheaders.h"
-				>
-			</File>
-			<File
 				RelativePath=".\targetver.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\twitcurl.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\curl\typecheck-gcc.h"
 				>
 			</File>
 		</Filter>
