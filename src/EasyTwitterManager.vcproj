@@ -232,6 +232,10 @@
 				RelativePath=".\targetver.h"
 				>
 			</File>
+			<File
+				RelativePath=".\winHome.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Fichiers de ressources"

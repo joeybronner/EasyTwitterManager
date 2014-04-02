@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <io.h>
 #include <fcntl.h>
+#include "winHome.h"
 
 #using <mscorlib.dll>
 #using <System.dll>
@@ -25,50 +26,7 @@ using namespace System::ComponentModel;
 using namespace System::Collections;
 using namespace System::Data;
 using namespace System::Drawing;
-
-
-public __gc class fenetreAccueil : public System::Windows::Forms::Form
-{  
-	public:
-	fenetreAccueil(void)
-	{
-		InitializeComponent();
-	}
-
-	private:
-	/// <summary>
-	/// Required designer variable.
-	/// </summary>
-	System::ComponentModel::Container * components;
-	System::Windows::Forms::Button *  button1;
-
-	/// <summary>
-	/// Required method for Designer support - do not modify
-	/// the contents of this method with the code editor.
-	/// </summary>
-	void InitializeComponent(void)
-	{
-			// main form settings
-			this->components = new System::ComponentModel::Container();
-			this->Size = System::Drawing::Size(800,600);
-			this->Text = "Accueil";
-
-
-			// button settings
-			this->button1 = new System::Windows::Forms::Button();
-			//this->SuspendLayout();
-			this->button1->Location = System::Drawing::Point(109, 113);
-			this->button1->Name = L"Test";
-			this->button1->Size = System::Drawing::Size(75, 23);
-			this->button1->TabIndex = 0;
-			this->button1->Text = L"Test";
-			this->button1->UseVisualStyleBackColor = true;
-
-			// adding the controls to the window
-			this->Controls->Add(this->button1);
-	}  
-};
-
+using namespace winHome;
 
 
 //void __stdcall WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,long lpCmdLine,int nCmdShow)
@@ -82,7 +40,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,PWSTR pCmdLine,
 
 	//http://msdn.microsoft.com/en-us/library/aa290064(VS.71).aspx
 	//System::Windows::Forms::MessageBox::Show("Hello, Windows Forms");
-	System::Threading::Thread::CurrentThread->ApartmentState = System::Threading::ApartmentState::STA;Application::Run(new fenetreAccueil());
+	System::Threading::Thread::CurrentThread->ApartmentState = System::Threading::ApartmentState::STA;
+	Application::Run(new windowHome());
 	return 0;
 }
 
