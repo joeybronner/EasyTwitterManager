@@ -11,8 +11,11 @@
 #include <fcntl.h>
 
 #using <mscorlib.dll>
-#using <System.Windows.Forms.dll>
 #using <System.dll>
+#using <System.Windows.Forms.dll>
+#using <System.Data.dll>
+#using <System.Drawing.dll>
+
 
 #define APIENTRY WINAPI
 
@@ -20,8 +23,8 @@ using namespace System;
 using namespace System::Windows::Forms;
 using namespace System::ComponentModel;
 using namespace System::Collections;
-//using namespace System::Data;
-//using namespace System::Drawing;
+using namespace System::Data;
+using namespace System::Drawing;
 
 
 public __gc class fenetreAccueil : public System::Windows::Forms::Form
@@ -32,12 +35,12 @@ public __gc class fenetreAccueil : public System::Windows::Forms::Form
 		InitializeComponent();
 	}
 
-
 	private:
 	/// <summary>
 	/// Required designer variable.
 	/// </summary>
 	System::ComponentModel::Container * components;
+	System::Windows::Forms::Button *  button1;
 
 	/// <summary>
 	/// Required method for Designer support - do not modify
@@ -45,9 +48,24 @@ public __gc class fenetreAccueil : public System::Windows::Forms::Form
 	/// </summary>
 	void InitializeComponent(void)
 	{
-	  this->components = new System::ComponentModel::Container();
-	  //this->Size = System::Drawing::Size(300,300);
-	  this->Text = "Accueil";
+			// main form settings
+			this->components = new System::ComponentModel::Container();
+			this->Size = System::Drawing::Size(800,600);
+			this->Text = "Accueil";
+
+
+			// button settings
+			this->button1 = new System::Windows::Forms::Button();
+			//this->SuspendLayout();
+			this->button1->Location = System::Drawing::Point(109, 113);
+			this->button1->Name = L"Test";
+			this->button1->Size = System::Drawing::Size(75, 23);
+			this->button1->TabIndex = 0;
+			this->button1->Text = L"Test";
+			this->button1->UseVisualStyleBackColor = true;
+
+			// adding the controls to the window
+			this->Controls->Add(this->button1);
 	}  
 };
 
