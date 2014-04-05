@@ -10,5 +10,4 @@ void	redirectMenu(int choix);
 
 private:
 
-
 };

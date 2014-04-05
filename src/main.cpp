@@ -17,8 +17,6 @@
 using namespace winHome;
 using namespace std;
 
-
-
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,PWSTR pCmdLine, int nCmdShow)
 {
 	/* Instanciation de twitCurl */
