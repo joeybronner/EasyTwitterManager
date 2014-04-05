@@ -10,6 +10,8 @@
 #include <string>
 #include <ctime>
 #include <time.h>
+#include <iostream>
+#include <fstream>
 
 
 #using <mscorlib.dll>
@@ -18,6 +20,7 @@
 #using <System.Data.dll>
 #using <System.Drawing.dll>
 
+using namespace std;
 
 namespace winHome {
 
@@ -45,11 +48,12 @@ namespace winHome {
 			//}
 		}
 
-	private:
-		System::ComponentModel::Container* components;
-		System::Windows::Forms::Button* button1;
-		System::Windows::Forms::PictureBox* imageLogo;
-		System::Windows::Forms::ListBox* consoleFooter;
+	public:
+		System::ComponentModel::Container*		components;
+		System::Windows::Forms::Button*			btAddAccount;
+		System::Windows::Forms::PictureBox*		imageLogo;
+		System::Windows::Forms::ListBox*		consoleFooter;
+		System::Windows::Forms::TextBox*		tbAccount;
 
 
 #pragma region Windows Form Designer generated code
@@ -64,13 +68,14 @@ namespace winHome {
 				this->Text = "Easy Twitter Manager | Home";
 
 			// button settings
-				this->button1 = new System::Windows::Forms::Button();
-				this->button1->Location = System::Drawing::Point(100, 100);
-				this->button1->Name = L"buttonStart";
-				this->button1->Size = System::Drawing::Size(100, 100);
-				this->button1->TabIndex = 0;
-				this->button1->Text = L"Start";
-				this->button1->UseVisualStyleBackColor = true;
+				this->btAddAccount = new System::Windows::Forms::Button();
+				this->btAddAccount->Location = System::Drawing::Point(120, 200);
+				this->btAddAccount->Name = L"btAddAccount";
+				this->btAddAccount->Size = System::Drawing::Size(50, 20);
+				this->btAddAccount->TabIndex = 0;
+				this->btAddAccount->Text = L"Ajouter";
+				this->btAddAccount->UseVisualStyleBackColor = true;
+				this->btAddAccount->Click += new System::EventHandler(this, &windowHome::btAddAccount_Click);
 
 			// logo on the top of window
 				this->imageLogo = new System::Windows::Forms::PictureBox();
@@ -82,6 +87,14 @@ namespace winHome {
 				this->imageLogo->Image = System::Drawing::Image::FromFile("../img/logo_home_window.png");
 				this->imageLogo->TabIndex = 0;
 				this->imageLogo->TabStop = false;
+
+			// textbox account for add someone to the list of people to follow
+				this->tbAccount = new System::Windows::Forms::TextBox();
+				this->tbAccount->Location = System::Drawing::Point(10, 200);
+				this->tbAccount->Name = L"tbAccount";
+				this->tbAccount->Size = System::Drawing::Size(100, 20);
+				this->tbAccount->Text = L"Initialisation";
+				this->tbAccount->TabIndex = 3;
 
 			// console footer
 				this->consoleFooter = new System::Windows::Forms::ListBox();
@@ -112,12 +125,30 @@ namespace winHome {
 
 			// adding the controls to the window
 				this->SuspendLayout();
-				this->Controls->Add(this->button1);
+				this->Controls->Add(this->btAddAccount);
 				this->Controls->Add(this->imageLogo);
 				this->Controls->Add(this->consoleFooter);
+				this->Controls->Add(this->tbAccount);
 				this->ResumeLayout(false);
 				this->PerformLayout();
 		}
 #pragma endregion
+	public: System::Void btAddAccount_Click(System::Object* sender, System::EventArgs* e)
+			{
+				// get the tb value
+				String* toAdd = this->tbAccount->Text;
+
+				// adding value to the file
+				ofstream myfile ("../files/tofollow.txt");
+				if (myfile.is_open())
+				{
+					myfile << "Ce que contient test (depuis winForm) : " << toAdd << "\n";
+					myfile.close();
+				}
+				MessageBox::Show("Utilisateur ajouté avec succès à la file d'attente.");
+				
+				// deleting the value in textbox
+				this->tbAccount->Text = "";
+			}
 	};
 }

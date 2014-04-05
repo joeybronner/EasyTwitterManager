@@ -9,22 +9,13 @@
 #include <io.h>
 #include <fcntl.h>
 #include "winHome.h"
-
-//#using <mscorlib.dll>
-//#using <System.dll>
-//#using <System.Windows.Forms.dll>
-//#using <System.Data.dll>
-//#using <System.Drawing.dll>
+#include <iostream>
+#include <fstream>
 
 #define APIENTRY WINAPI
 
-//using namespace System;
-//using namespace System::Windows::Forms;
-//using namespace System::ComponentModel;
-//using namespace System::Collections;
-//using namespace System::Data;
-//using namespace System::Drawing;
 using namespace winHome;
+using namespace std;
 
 
 
@@ -32,11 +23,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,PWSTR pCmdLine,
 {
 	/* Instanciation de twitCurl */
 	twitCurl twitterObj;
-    std::string tmpStr, tmpStr2;
-    std::string replyMsg;
+    string tmpStr, tmpStr2;
+    string replyMsg;
     char tmpBuf[1024];
 
-	//System::Threading::Thread::CurrentThread->ApartmentState = System::Threading::ApartmentState::STA;
-	Application::Run(new windowHome());
+	System::Threading::Thread::CurrentThread->ApartmentState = System::Threading::ApartmentState::STA;
+	windowHome* wHome = new windowHome();
+	Application::Run(wHome);
+
 	return 0;
 }
