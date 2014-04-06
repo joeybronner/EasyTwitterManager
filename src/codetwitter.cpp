@@ -9,16 +9,16 @@ affichage a;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	// ETM (banniere)
-	a.messageBanniere();
-	a.pause();
+	//// ETM (banniere)
+	//a.messageBanniere();
+	//a.pause();
 
 
-	// MENU
-	choixUser = a.menu(); 
-	a.redirectMenu(choixUser);
-	
-	system("PAUSE");
+	//// MENU
+	//choixUser = a.menu(); 
+	//a.redirectMenu(choixUser);
+	//
+	//system("PAUSE");
 
 	// --- TWITCURL ---
 	twitCurl twitterObj;

@@ -19,12 +19,6 @@ using namespace std;
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,PWSTR pCmdLine, int nCmdShow)
 {
-	/* Instanciation de twitCurl */
-	twitCurl twitterObj;
-    string tmpStr, tmpStr2;
-    string replyMsg;
-    char tmpBuf[1024];
-
 	System::Threading::Thread::CurrentThread->ApartmentState = System::Threading::ApartmentState::STA;
 	windowHome* wHome = new windowHome();
 	Application::Run(wHome);

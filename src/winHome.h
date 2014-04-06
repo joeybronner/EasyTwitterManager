@@ -10,6 +10,7 @@
 #include <string>
 #include <ctime>
 #include <time.h>
+#include "winSettings.h"
 
 
 #using <mscorlib.dll>
@@ -19,6 +20,7 @@
 #using <System.Drawing.dll>
 
 using namespace std;
+using namespace winSettings;
 
 namespace winHome {
 
@@ -34,8 +36,21 @@ namespace winHome {
 	{
 	public:
 		windowHome(void)
-		{
+		{		
 			InitializeComponent();
+
+			/* Instanciation de twitCurl */
+			twitCurl twitterObj;
+			string tmpStr, tmpStr2;
+			string replyMsg;
+			char tmpBuf[1024];
+
+			/* OAuth flow begins */
+			twitterObj.getOAuth().setConsumerKey( std::string( "vlC5S1NCMHHg8mD1ghPRkA" ) );
+			twitterObj.getOAuth().setConsumerSecret( std::string( "3w4cIrHyI3IYUZW5O2ppcFXmsACDaENzFdLIKmEU84" ) );
+
+			/*  */
+			writeConsole("Initialisation de l'API Twitter.");
 		}
 
 	protected:
@@ -53,6 +68,8 @@ namespace winHome {
 		System::Windows::Forms::PictureBox*		imageLogo;
 		System::Windows::Forms::ListBox*		consoleFooter;
 		System::Windows::Forms::TextBox*		tbAccount;
+		System::Windows::Forms::Button*			btConfig;
+		System::Windows::Forms::Button*			btInfos;
 
 
 #pragma region Windows Form Designer generated code
@@ -71,9 +88,9 @@ namespace winHome {
 				System::Drawing::Icon* iconETM = System::Drawing::Icon::FromHandle( Hicon );
 				this->Icon = iconETM;
 
-			// button settings
+			// button add to follow
 				this->btAddAccount = new System::Windows::Forms::Button();
-				this->btAddAccount->Location = System::Drawing::Point(120, 200);
+				this->btAddAccount->Location = System::Drawing::Point(220, 200);
 				this->btAddAccount->Name = L"btAddAccount";
 				this->btAddAccount->Size = System::Drawing::Size(50, 20);
 				this->btAddAccount->TabIndex = 0;
@@ -81,12 +98,43 @@ namespace winHome {
 				this->btAddAccount->UseVisualStyleBackColor = true;
 				this->btAddAccount->Click += new System::EventHandler(this, &windowHome::btAddAccount_Click);
 
+			// btConfig, general app settings
+				this->btConfig = new System::Windows::Forms::Button();
+				this->btConfig->BackColor = System::Drawing::Color::LightSkyBlue;	
+				this->btConfig->Image = System::Drawing::Image::FromFile("../img/ic_settings.png");
+				this->btConfig->Location = System::Drawing::Point(5, 365);
+				this->btConfig->Cursor = System::Windows::Forms::Cursors::Hand;
+				this->btConfig->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+				this->btConfig->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
+				this->btConfig->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
+				this->btConfig->FlatAppearance->BorderSize = 0;
+				this->btConfig->Name = L"btConfig";
+				this->btConfig->Size = System::Drawing::Size(90, 90);
+				this->btConfig->TabIndex = 3;
+				this->btConfig->UseVisualStyleBackColor = false;
+				this->btConfig->Click += new System::EventHandler(this, &windowHome::btConfig_Click);
+
+			// btInfos, why this app has been devlopped ? who ? etc.. 
+				this->btInfos = new System::Windows::Forms::Button();
+				this->btInfos->BackColor = System::Drawing::Color::LightSkyBlue;	
+				this->btInfos->Image = System::Drawing::Image::FromFile("../img/ic_infos.png");
+				this->btInfos->Location = System::Drawing::Point(5, 465);
+				this->btInfos->Cursor = System::Windows::Forms::Cursors::Hand;
+				this->btInfos->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+				this->btInfos->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
+				this->btInfos->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
+				this->btInfos->FlatAppearance->BorderSize = 0;
+				this->btInfos->Name = L"btInfos";
+				this->btInfos->Size = System::Drawing::Size(90, 90);
+				this->btInfos->TabIndex = 3;
+				this->btInfos->UseVisualStyleBackColor = false;
+
 			// logo on the top of window
 				this->imageLogo = new System::Windows::Forms::PictureBox();
-				this->imageLogo->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-				this->imageLogo->Location = System::Drawing::Point(10, 10);
+				//this->imageLogo->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+				this->imageLogo->Location = System::Drawing::Point(100, 10);
 				this->imageLogo->Name = L"imageLogo";
-				this->imageLogo->Size = System::Drawing::Size(770, 120);
+				this->imageLogo->Size = System::Drawing::Size(680, 120);
 				this->imageLogo->SizeMode = System::Windows::Forms::PictureBoxSizeMode::CenterImage;
 				this->imageLogo->Image = System::Drawing::Image::FromFile("../img/logo_home_window.png");
 				this->imageLogo->TabIndex = 0;
@@ -94,23 +142,20 @@ namespace winHome {
 
 			// textbox account for add someone to the list of people to follow
 				this->tbAccount = new System::Windows::Forms::TextBox();
-				this->tbAccount->Location = System::Drawing::Point(10, 200);
+				this->tbAccount->Location = System::Drawing::Point(110, 200);
 				this->tbAccount->Name = L"tbAccount";
 				this->tbAccount->Size = System::Drawing::Size(100, 20);
-				this->tbAccount->Text = L"Initialisation";
 				this->tbAccount->TabIndex = 3;
 
 			// console footer
 				this->consoleFooter = new System::Windows::Forms::ListBox();
 				this->consoleFooter->FormattingEnabled = true;
-				this->consoleFooter->Location = System::Drawing::Point(10, 460);
+				this->consoleFooter->Location = System::Drawing::Point(100, 460);
 				this->consoleFooter->Name = L"consoleFooter";
-				this->consoleFooter->Size = System::Drawing::Size(770, 100);
+				this->consoleFooter->Size = System::Drawing::Size(680, 100);
 				this->consoleFooter->Sorted = true;
 				this->consoleFooter->TabIndex = 2;
-				String* currentDate = getDateTime();
-				String* initMsg = String::Concat(currentDate,"Initialisation de la fenêtre d'accueil.");
-				this->consoleFooter->Items->Add(initMsg);
+				writeConsole("Initialisation de la fenêtre d'accueil.");
 
 			// adding the controls to the window
 				this->SuspendLayout();
@@ -118,6 +163,8 @@ namespace winHome {
 				this->Controls->Add(this->imageLogo);
 				this->Controls->Add(this->consoleFooter);
 				this->Controls->Add(this->tbAccount);
+				this->Controls->Add(this->btConfig);
+				this->Controls->Add(this->btInfos);
 				this->ResumeLayout(false);
 				this->PerformLayout();
 		}
@@ -155,10 +202,8 @@ namespace winHome {
 						sw->Close();
 
 						// logs and msgbox 
-						String* msgAjout = getDateTime();
-						msgAjout = String::Concat(msgAjout,"Ajout de ",toAdd," à la file d'attente.");
-						this->consoleFooter->Items->Add(msgAjout);
-						//MessageBox::Show("Mise à jour du fichier effectuée avec succès.");
+						String* msgAjout = String::Concat("Ajout de ",toAdd," à la file d'attente.");
+						writeConsole(msgAjout);
 					}
 					catch (Exception* e)
 					{
@@ -168,6 +213,12 @@ namespace winHome {
 					// deleting the value in textbox
 					this->tbAccount->Text = "";
 				}
+			}
+
+	public: System::Void btConfig_Click(System::Object* sender, System::EventArgs* e)
+			{
+				windowSettings* wSettings = new windowSettings();
+				wSettings->ShowDialog();
 			}
 
 	public: System::String* getDateTime()
@@ -205,5 +256,12 @@ namespace winHome {
 				retour = String::Concat(retour,Sseco," - ");
 				return retour;
 			}
+	public: void writeConsole(String* msg)
+			{
+				String* currentDate = getDateTime();
+				String* initMsg = String::Concat(currentDate,msg);
+				this->consoleFooter->Items->Add(initMsg);
+			}
+
 	};
 }
