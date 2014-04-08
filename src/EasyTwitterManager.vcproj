@@ -192,6 +192,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\globals.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\main.cpp"
 				>
 			</File>

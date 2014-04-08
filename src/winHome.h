@@ -13,7 +13,6 @@
 #include <time.h>
 #include "winSettings.h"
 
-
 #using <mscorlib.dll>
 #using <System.dll>
 #using <System.Windows.Forms.dll>
@@ -40,6 +39,8 @@ namespace winHome {
 		windowHome(void)
 		{		
 			InitializeComponent();
+			//extern int loggedIn;
+			//writeConsole(String::Concat("test",loggedIn.ToString()));
 		}
 
 	protected:
@@ -327,8 +328,15 @@ namespace winHome {
 						std::string authUrl;
 						twitterObj.oAuthRequestToken( authUrl );
 
-						writeConsole(String::Concat("Ouverture de la page web : ",authUrl.c_str()));
-						System::Diagnostics::Process::Start(authUrl.c_str());
+						if (MessageBox::Show(String::Concat("Vous devez être redirigé vers ",authUrl.c_str()," pour autoriser l'application."),"Authentification EasyTwitterManager", MessageBoxButtons::YesNo,MessageBoxIcon::Question)==::DialogResult::Yes)
+						{
+							writeConsole(String::Concat("Ouverture de la page web : ",authUrl.c_str()));
+							System::Diagnostics::Process::Start(authUrl.c_str());
+						}
+						else {
+							writeConsole(String::Concat("L'initialisation recquiert une redirection vers internet."));
+						}
+
 
 						//MessageBox::Show(textBox1.Text,"");
 
