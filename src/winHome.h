@@ -63,6 +63,8 @@ namespace winHome {
 		System::Windows::Forms::Button*			btConfig;
 		System::Windows::Forms::Button*			btInfos;
 		System::Windows::Forms::Button*			btLogin;
+		System::Windows::Forms::TextBox*		tbNewTweet;
+		System::Windows::Forms::Button*			btAddTweet;
 
 
 #pragma region Windows Form Designer generated code
@@ -96,7 +98,6 @@ namespace winHome {
 				this->btAddAccount->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
 				this->btAddAccount->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
 				this->btAddAccount->FlatAppearance->BorderSize = 0;
-
 
 			// btConfig, general app settings
 				this->btConfig = new System::Windows::Forms::Button();
@@ -163,6 +164,33 @@ namespace winHome {
 				this->tbAccount->Size = System::Drawing::Size(100, 20);
 				this->tbAccount->TabIndex = 3;
 
+			// text box used to set up the pin auth
+				this->tbNewTweet = new System::Windows::Forms::TextBox();
+				this->tbNewTweet->BorderStyle = System::Windows::Forms::BorderStyle::None;
+				this->tbNewTweet->Font = new System::Drawing::Font(L"Open Sans", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point);
+				this->tbNewTweet->Location = System::Drawing::Point(100, 430);
+				this->tbNewTweet->Name = L"tbNewTweet";
+				this->tbNewTweet->Size = System::Drawing::Size(500, 40);
+				this->tbNewTweet->TextAlign = System::Windows::Forms::HorizontalAlignment::Left;
+				this->tbNewTweet->MaxLength = 140;
+				//this->tbNewTweet->TabIndex = 5;
+
+			// button add tweet
+				this->btAddTweet = new System::Windows::Forms::Button();
+				this->btAddTweet->Location = System::Drawing::Point(620, 430);
+				this->btAddTweet->Name = L"btAddTweet";
+				this->btAddTweet->Size = System::Drawing::Size(70, 20);
+				this->btAddTweet->TabIndex = 0;
+				this->btAddTweet->Text = L"Tweeter!";
+				this->btAddTweet->UseVisualStyleBackColor = true;
+				this->btAddTweet->Cursor = System::Windows::Forms::Cursors::Hand;
+				this->btAddTweet->Click += new System::EventHandler(this, &windowHome::btAddTweet_Click);
+				this->btAddTweet->ForeColor = System::Drawing::Color::White;
+				this->btAddTweet->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+				this->btAddTweet->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
+				this->btAddTweet->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
+				this->btAddTweet->FlatAppearance->BorderSize = 0;
+
 			// console footer
 				this->consoleFooter = new System::Windows::Forms::ListBox();
 				this->consoleFooter->FormattingEnabled = true;
@@ -171,13 +199,17 @@ namespace winHome {
 				this->consoleFooter->Size = System::Drawing::Size(680, 100);
 				this->consoleFooter->Sorted = true;
 				this->consoleFooter->TabIndex = 2;
+				this->consoleFooter->BorderStyle = System::Windows::Forms::BorderStyle::None;
+				this->consoleFooter->ScrollAlwaysVisible = true;
 				writeConsole("Initialisation de la fenêtre d'accueil.");
 
 			// adding the controls to the window
 				this->SuspendLayout();
 				this->Controls->Add(this->btAddAccount);
 				this->Controls->Add(this->imageLogo);
+				this->Controls->Add(this->btAddTweet);
 				this->Controls->Add(this->consoleFooter);
+				this->Controls->Add(this->tbNewTweet);
 				this->Controls->Add(this->tbAccount);
 				this->Controls->Add(this->btConfig);
 				this->Controls->Add(this->btInfos);
@@ -187,6 +219,21 @@ namespace winHome {
 		}
 #pragma endregion
 
+	public: System::Void btAddTweet_Click(System::Object* sender, System::EventArgs* e)
+			{
+				extern twitCurl twitterObj;
+				String* test = this->tbNewTweet->Text;
+				string ajout;
+				MarshalString(test,ajout);
+				if (twitterObj.statusUpdate(ajout))
+				{
+					extern string replyMsg;
+					twitterObj.getLastWebResponse( replyMsg );
+					writeConsole(String::Concat("ajouté : ",replyMsg.c_str()));
+				} else {
+					writeConsole("erreur");
+				}
+			}
 	public: System::Void btAddAccount_Click(System::Object* sender, System::EventArgs* e)
 			{
 
@@ -280,7 +327,7 @@ namespace winHome {
 					writeConsole("Début de l'initialisation de l'API Twitter.");
 
 					/* twitCurl initializing */
-					twitCurl twitterObj;
+					extern twitCurl twitterObj;
 					extern string tmpStr, tmpStr2;
 					extern string replyMsg;
 					extern char tmpBuf[1024];
@@ -312,19 +359,20 @@ namespace winHome {
 						if( myOAuthAccessTokenKey.size() && myOAuthAccessTokenSecret.size() )
 						{
 							/* If we already have these keys, then no need to go through auth again */
+							writeConsole("Clés récupérées avec succès.");
 							writeConsole(String::Concat("Key   : ", myOAuthAccessTokenKey.c_str()));
 							writeConsole(String::Concat("Secret: ", myOAuthAccessTokenSecret.c_str()));
-								
+							
+							/* authentification */
 							twitterObj.getOAuth().setOAuthTokenKey( myOAuthAccessTokenKey );
 							twitterObj.getOAuth().setOAuthTokenSecret( myOAuthAccessTokenSecret );
-							writeConsole("Clés récupérées avec succès.");
 						}
 						
 					}
 					else {
 						writeConsole("Aucune ancienne connexion détectée.");
 						
-						/* Step 2: Get request token key and secret */
+						/* get request token key and secret */
 						std::string authUrl;
 						twitterObj.oAuthRequestToken( authUrl );
 
@@ -342,40 +390,58 @@ namespace winHome {
 							// auth with the key entered by the user
 							twitterObj.getOAuth().setOAuthPin( tmpStr );
 							twitterObj.oAuthAccessToken();
+
+							/* authentification */
 							twitterObj.getOAuth().getOAuthTokenKey( myOAuthAccessTokenKey );
 							twitterObj.getOAuth().getOAuthTokenSecret( myOAuthAccessTokenSecret );
 
-							///* Step 6: Save these keys in a file or wherever */
+							/* Saving these keys in a text file */
 							std::ofstream oAuthTokenKeyOut;
 							std::ofstream oAuthTokenSecretOut;
 
 							oAuthTokenKeyOut.open( "../txt/twitterClient_token_key.txt" );
 							oAuthTokenSecretOut.open( "../txt/twitterClient_token_secret.txt" );
 
+							// deleting data who are already in this file
 							oAuthTokenKeyOut.clear();
 							oAuthTokenSecretOut.clear();
 
-							// Mise a jour des cles d'acces (fichiers txt)
+							// adding the new keys
 							oAuthTokenKeyOut << myOAuthAccessTokenKey.c_str();
 							oAuthTokenSecretOut << myOAuthAccessTokenSecret.c_str();
 
-							// Fermeture des fichiers
+							// closing files
 							oAuthTokenKeyOut.close();
 							oAuthTokenSecretOut.close();
 						}
 						else {
-							writeConsole("L'initialisation recquiert une redirection vers internet.");
+							writeConsole("L'initialisation requiert une redirection vers internet.");
+							return;
 						}
 
-
-
-						
 					}
 
+					// check if connection if ok
 
-					
-					/* ìnit message on console */
+					if( twitterObj.accountVerifyCredGet() )
+					{
+						//twitterObj.getLastWebResponse( replyMsg );
+						
+						replyMsg = twitterObj.timelineUserGet(true,false,1,"", false);
+						writeConsole(String::Concat("test : ",replyMsg.c_str()));
+					}
+					else
+					{
+						twitterObj.getLastCurlError( replyMsg );
+						writeConsole(replyMsg.c_str());
+					}
+
+					/*
+						CONNECTION ESTABLISHED !!! 
+						ìnit message on console
+					*/
 					writeConsole("Fin de l'initialisation de l'API Twitter.");
+
 				}
 				catch (int e) {
 					/* error message */

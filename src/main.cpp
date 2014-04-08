@@ -21,6 +21,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,PWSTR pCmdLine,
 {
 	System::Threading::Thread::CurrentThread->ApartmentState = System::Threading::ApartmentState::STA;
 	windowHome* wHome = new windowHome();
+	twitCurl twitterObj;
 	Application::Run(wHome);
 
 	return 0;

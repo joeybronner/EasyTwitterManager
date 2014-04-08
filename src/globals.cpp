@@ -9,6 +9,7 @@
 #include <string>
 #include <ctime>
 #include <time.h>
+//#include "twitcurl.h"
 
 using namespace std;
 
