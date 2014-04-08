@@ -7,6 +7,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include <iostream>
+#include <fstream>     
 #include <string>
 #include <ctime>
 #include <time.h>
@@ -18,6 +19,7 @@
 #using <System.Windows.Forms.dll>
 #using <System.Data.dll>
 #using <System.Drawing.dll>
+#using <mscorlib.dll>
 
 using namespace std;
 using namespace winSettings;
@@ -38,19 +40,6 @@ namespace winHome {
 		windowHome(void)
 		{		
 			InitializeComponent();
-
-			/* Instanciation de twitCurl */
-			twitCurl twitterObj;
-			string tmpStr, tmpStr2;
-			string replyMsg;
-			char tmpBuf[1024];
-
-			/* OAuth flow begins */
-			twitterObj.getOAuth().setConsumerKey( std::string( "vlC5S1NCMHHg8mD1ghPRkA" ) );
-			twitterObj.getOAuth().setConsumerSecret( std::string( "3w4cIrHyI3IYUZW5O2ppcFXmsACDaENzFdLIKmEU84" ) );
-
-			/*  */
-			writeConsole("Initialisation de l'API Twitter.");
 		}
 
 	protected:
@@ -70,6 +59,7 @@ namespace winHome {
 		System::Windows::Forms::TextBox*		tbAccount;
 		System::Windows::Forms::Button*			btConfig;
 		System::Windows::Forms::Button*			btInfos;
+		System::Windows::Forms::Button*			btLogin;
 
 
 #pragma region Windows Form Designer generated code
@@ -113,6 +103,22 @@ namespace winHome {
 				this->btConfig->TabIndex = 3;
 				this->btConfig->UseVisualStyleBackColor = false;
 				this->btConfig->Click += new System::EventHandler(this, &windowHome::btConfig_Click);
+
+			// btLogin, to log in twitter using twitcurl
+				this->btLogin = new System::Windows::Forms::Button();
+				this->btLogin->BackColor = System::Drawing::Color::LightSkyBlue;	
+				this->btLogin->Image = System::Drawing::Image::FromFile("../img/ic_login.png");
+				this->btLogin->Location = System::Drawing::Point(5, 5);
+				this->btLogin->Cursor = System::Windows::Forms::Cursors::Hand;
+				this->btLogin->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+				this->btLogin->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
+				this->btLogin->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
+				this->btLogin->FlatAppearance->BorderSize = 0;
+				this->btLogin->Name = L"btLogin";
+				this->btLogin->Size = System::Drawing::Size(90, 90);
+				this->btLogin->TabIndex = 3;
+				this->btLogin->UseVisualStyleBackColor = false;
+				this->btLogin->Click += new System::EventHandler(this, &windowHome::btLogin_Click);
 
 			// btInfos, why this app has been devlopped ? who ? etc.. 
 				this->btInfos = new System::Windows::Forms::Button();
@@ -165,6 +171,7 @@ namespace winHome {
 				this->Controls->Add(this->tbAccount);
 				this->Controls->Add(this->btConfig);
 				this->Controls->Add(this->btInfos);
+				this->Controls->Add(this->btLogin);
 				this->ResumeLayout(false);
 				this->PerformLayout();
 		}
@@ -256,12 +263,99 @@ namespace winHome {
 				retour = String::Concat(retour,Sseco," - ");
 				return retour;
 			}
+	public: System::Void btLogin_Click(System::Object* sender, System::EventArgs* e)
+			{
+				try {
+					/* ìnit message on console */
+					writeConsole("Début de l'initialisation de l'API Twitter.");
+
+					/* twitCurl initializing */
+					twitCurl twitterObj;
+					string tmpStr, tmpStr2;
+					string replyMsg;
+					char tmpBuf[1024];
+
+					/* OAuth flow begins */
+					twitterObj.getOAuth().setConsumerKey(	 std::string( "vlC5S1NCMHHg8mD1ghPRkA" ) );
+					twitterObj.getOAuth().setConsumerSecret( std::string( "3w4cIrHyI3IYUZW5O2ppcFXmsACDaENzFdLIKmEU84" ) );
+
+					/* check if we alredy have OAuth access token from a previous run */
+
+					std::ifstream oAuthTokenKeyIn("../txt/twitterClient_token_key.txt");
+					std::ifstream oAuthTokenSecretIn("../txt/twitterClient_token_secret.txt");
+
+					if (oAuthTokenKeyIn)
+					{
+						writeConsole("Récupération des clés d'authentification d'une ancienne connexion.");
+
+						string myOAuthAccessTokenKey("");
+						string myOAuthAccessTokenSecret("");
+
+						// opening files
+						oAuthTokenKeyIn.open( "../txt/twitterClient_token_key.txt" );
+						oAuthTokenSecretIn.open( "../txt/twitterClient_token_secret.txt" );
+
+						// get the key from file
+						memset( tmpBuf, 0, 1024 );
+						oAuthTokenKeyIn >> tmpBuf;
+						myOAuthAccessTokenKey = tmpBuf;
+
+						// get the secret from file
+						memset( tmpBuf, 0, 1024 );
+						oAuthTokenSecretIn >> tmpBuf;
+						myOAuthAccessTokenSecret = tmpBuf;
+
+						// closing file
+						oAuthTokenKeyIn.close();
+						oAuthTokenSecretIn.close();
+						if( myOAuthAccessTokenKey.size() && myOAuthAccessTokenSecret.size() )
+							{
+								/* If we already have these keys, then no need to go through auth again */
+								writeConsole(String::Concat("Key: ", myOAuthAccessTokenKey.c_str()));
+								writeConsole(String::Concat("Key: ", myOAuthAccessTokenSecret.c_str()));
+								
+								twitterObj.getOAuth().setOAuthTokenKey( myOAuthAccessTokenKey );
+								twitterObj.getOAuth().setOAuthTokenSecret( myOAuthAccessTokenSecret );
+								writeConsole("Clés récupérées avec succès.");
+							}
+						
+					}
+					else {
+						writeConsole("Aucune ancienne connexion détectée.");
+						
+						/* Step 2: Get request token key and secret */
+						std::string authUrl;
+						twitterObj.oAuthRequestToken( authUrl );
+
+						writeConsole(String::Concat("Ouverture de la page web : ",authUrl.c_str()));
+						System::Diagnostics::Process::Start(authUrl.c_str());
+
+						//MessageBox::Show(textBox1.Text,"");
+
+						// get the pin value
+						// --> pop-up
+						// tmpStr = return value;
+						//twitterObj.getOAuth().setOAuthPin( tmpStr );
+					}
+
+
+					
+					/* ìnit message on console */
+					writeConsole("Fin de l'initialisation de l'API Twitter.");
+				}
+				catch (int e) {
+					/* error message */
+					writeConsole("Erreur lors de l'initialisation de l'API Twitter.");
+					writeConsole(e.ToString());
+				}
+
+				
+			}
 	public: void writeConsole(String* msg)
 			{
 				String* currentDate = getDateTime();
 				String* initMsg = String::Concat(currentDate,msg);
 				this->consoleFooter->Items->Add(initMsg);
 			}
-
 	};
 }

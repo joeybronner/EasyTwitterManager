@@ -6,6 +6,10 @@
 /* Variables gloables */
 int choixUser = 99;
 affichage a;
+twitCurl twitterObj;
+    std::string tmpStr, tmpStr2;
+    std::string replyMsg;
+    char tmpBuf[1024];
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -20,49 +24,47 @@ int _tmain(int argc, _TCHAR* argv[])
 	//
 	//system("PAUSE");
 
-	// --- TWITCURL ---
-	twitCurl twitterObj;
-    std::string tmpStr, tmpStr2;
-    std::string replyMsg;
-    char tmpBuf[1024];
+	//// --- TWITCURL ---
+ //	  twitCurl twitterObj;
+
 
 
 	/* Set proxy server usename, password, IP and port (if present) */
-    memset( tmpBuf, 0, 1024 );
-	std::cout << "\nEst-ce que vous disposez d'un proxy (0 pour non; 1 pour oui) : ";
-    //gets( tmpBuf );
-	std::cin >> tmpBuf;
-    tmpStr = tmpBuf;
-    if( std::string::npos != tmpStr.find( "1" ) )
-    {
-        memset( tmpBuf, 0, 1024 );
-        printf( "\nAdresse IP du proxy: " );
-        std::cin >> tmpBuf;
-		//gets( tmpBuf );
-        tmpStr = tmpBuf;
-        twitterObj.setProxyServerIp( tmpStr );
+ //   memset( tmpBuf, 0, 1024 );
+	//std::cout << "\nEst-ce que vous disposez d'un proxy (0 pour non; 1 pour oui) : ";
+ //   //gets( tmpBuf );
+	//std::cin >> tmpBuf;
+ //   tmpStr = tmpBuf;
+ //   if( std::string::npos != tmpStr.find( "1" ) )
+ //   {
+ //       memset( tmpBuf, 0, 1024 );
+ //       printf( "\nAdresse IP du proxy: " );
+ //       std::cin >> tmpBuf;
+	//	//gets( tmpBuf );
+ //       tmpStr = tmpBuf;
+ //       twitterObj.setProxyServerIp( tmpStr );
 
-        memset( tmpBuf, 0, 1024 );
-        printf( "\nPort du proxy: " );
-        std::cin >> tmpBuf;
-		//gets( tmpBuf );
-        tmpStr = tmpBuf;
-        twitterObj.setProxyServerPort( tmpStr );
+ //       memset( tmpBuf, 0, 1024 );
+ //       printf( "\nPort du proxy: " );
+ //       std::cin >> tmpBuf;
+	//	//gets( tmpBuf );
+ //       tmpStr = tmpBuf;
+ //       twitterObj.setProxyServerPort( tmpStr );
 
-        memset( tmpBuf, 0, 1024 );
-        printf( "\nNom d'utilisateur du proxy: " );
-        std::cin >> tmpBuf;
-		//gets( tmpBuf );
-        tmpStr = tmpBuf;
-        twitterObj.setProxyUserName( tmpStr );
+ //       memset( tmpBuf, 0, 1024 );
+ //       printf( "\nNom d'utilisateur du proxy: " );
+ //       std::cin >> tmpBuf;
+	//	//gets( tmpBuf );
+ //       tmpStr = tmpBuf;
+ //       twitterObj.setProxyUserName( tmpStr );
 
-        memset( tmpBuf, 0, 1024 );
-        printf( "\nMot de passe du proxy: " );
-        std::cin >> tmpBuf;
-		//gets( tmpBuf );
-        tmpStr = tmpBuf;
-        twitterObj.setProxyPassword( tmpStr );
-    }
+ //       memset( tmpBuf, 0, 1024 );
+ //       printf( "\nMot de passe du proxy: " );
+ //       std::cin >> tmpBuf;
+	//	//gets( tmpBuf );
+ //       tmpStr = tmpBuf;
+ //       twitterObj.setProxyPassword( tmpStr );
+ //   }
 
     /* OAuth flow begins */
     /* Step 0: Set OAuth related params. These are got by registering your app at twitter.com */
