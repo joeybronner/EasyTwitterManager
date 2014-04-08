@@ -119,10 +119,13 @@ namespace winPin {
 #pragma endregion
 	public: System::Void btOK_Click(System::Object* sender, System::EventArgs* e)
 			{
-				extern string tmpStr;
-				String* pin = this->tbPin->Text;
-				MarshalString(pin, tmpStr);
-				this->Close();
+				if (this->tbPin->Text->Length > 0)
+				{
+					extern string tmpStr;
+					String* pin = this->tbPin->Text;
+					MarshalString(pin, tmpStr);
+					this->Close();
+				}
 			}
 
 void MarshalString ( String* s, string& os )

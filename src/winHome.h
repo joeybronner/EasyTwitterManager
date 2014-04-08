@@ -294,40 +294,31 @@ namespace winHome {
 					std::ifstream oAuthTokenKeyIn("../txt/twitterClient_token_key.txt");
 					std::ifstream oAuthTokenSecretIn("../txt/twitterClient_token_secret.txt");
 
-					if (oAuthTokenKeyIn)
+					string myOAuthAccessTokenKey("");
+					string myOAuthAccessTokenSecret("");
+
+					if (oAuthTokenKeyIn && oAuthTokenSecretIn)
 					{
 						writeConsole("Récupération des clés d'authentification d'une ancienne connexion.");
 
-						string myOAuthAccessTokenKey("");
-						string myOAuthAccessTokenSecret("");
-
-						// opening files
-						oAuthTokenKeyIn.open( "../txt/twitterClient_token_key.txt" );
-						oAuthTokenSecretIn.open( "../txt/twitterClient_token_secret.txt" );
-
 						// get the key from file
-						memset( tmpBuf, 0, 1024 );
-						oAuthTokenKeyIn >> tmpBuf;
-						myOAuthAccessTokenKey = tmpBuf;
+						String* key = System::IO::File::ReadAllText("../txt/twitterClient_token_key.txt");
+						MarshalString(key,myOAuthAccessTokenKey);
 
 						// get the secret from file
-						memset( tmpBuf, 0, 1024 );
-						oAuthTokenSecretIn >> tmpBuf;
-						myOAuthAccessTokenSecret = tmpBuf;
+						String* secret = System::IO::File::ReadAllText("../txt/twitterClient_token_secret.txt");
+						MarshalString(secret,myOAuthAccessTokenSecret);
 
-						// closing file
-						oAuthTokenKeyIn.close();
-						oAuthTokenSecretIn.close();
 						if( myOAuthAccessTokenKey.size() && myOAuthAccessTokenSecret.size() )
-							{
-								/* If we already have these keys, then no need to go through auth again */
-								writeConsole(String::Concat("Key: ", myOAuthAccessTokenKey.c_str()));
-								writeConsole(String::Concat("Key: ", myOAuthAccessTokenSecret.c_str()));
+						{
+							/* If we already have these keys, then no need to go through auth again */
+							writeConsole(String::Concat("Key   : ", myOAuthAccessTokenKey.c_str()));
+							writeConsole(String::Concat("Secret: ", myOAuthAccessTokenSecret.c_str()));
 								
-								twitterObj.getOAuth().setOAuthTokenKey( myOAuthAccessTokenKey );
-								twitterObj.getOAuth().setOAuthTokenSecret( myOAuthAccessTokenSecret );
-								writeConsole("Clés récupérées avec succès.");
-							}
+							twitterObj.getOAuth().setOAuthTokenKey( myOAuthAccessTokenKey );
+							twitterObj.getOAuth().setOAuthTokenSecret( myOAuthAccessTokenSecret );
+							writeConsole("Clés récupérées avec succès.");
+						}
 						
 					}
 					else {
@@ -340,19 +331,37 @@ namespace winHome {
 						if (MessageBox::Show(String::Concat("Vous devez être redirigé vers ",authUrl.c_str()," pour autoriser l'application."),"Authentification EasyTwitterManager", MessageBoxButtons::YesNo,MessageBoxIcon::Question)==::DialogResult::Yes)
 						{
 							writeConsole(String::Concat("Ouverture de la page web : ",authUrl.c_str()));
-							//System::Diagnostics::Process::Start(authUrl.c_str());
+							System::Diagnostics::Process::Start(authUrl.c_str());
 
 							// to get the pin value
 							windowPin* wPin = new windowPin();
 							wPin->ShowDialog();
 
-							writeConsole(String::Concat("Pin entré : ",tmpStr.c_str()));
+							writeConsole(String::Concat("PIN entré : ",tmpStr.c_str()));
 
-							//twitterObj.getOAuth().setOAuthPin( tmpStr );
+							// auth with the key entered by the user
+							twitterObj.getOAuth().setOAuthPin( tmpStr );
+							twitterObj.oAuthAccessToken();
+							twitterObj.getOAuth().getOAuthTokenKey( myOAuthAccessTokenKey );
+							twitterObj.getOAuth().getOAuthTokenSecret( myOAuthAccessTokenSecret );
 
+							///* Step 6: Save these keys in a file or wherever */
+							std::ofstream oAuthTokenKeyOut;
+							std::ofstream oAuthTokenSecretOut;
 
+							oAuthTokenKeyOut.open( "../txt/twitterClient_token_key.txt" );
+							oAuthTokenSecretOut.open( "../txt/twitterClient_token_secret.txt" );
 
+							oAuthTokenKeyOut.clear();
+							oAuthTokenSecretOut.clear();
 
+							// Mise a jour des cles d'acces (fichiers txt)
+							oAuthTokenKeyOut << myOAuthAccessTokenKey.c_str();
+							oAuthTokenSecretOut << myOAuthAccessTokenSecret.c_str();
+
+							// Fermeture des fichiers
+							oAuthTokenKeyOut.close();
+							oAuthTokenSecretOut.close();
 						}
 						else {
 							writeConsole("L'initialisation recquiert une redirection vers internet.");
@@ -381,6 +390,14 @@ namespace winHome {
 				String* currentDate = getDateTime();
 				String* initMsg = String::Concat(currentDate,msg);
 				this->consoleFooter->Items->Add(initMsg);
+			}
+
+	void MarshalString ( String* s, string& os )
+			{
+			   using namespace Runtime::InteropServices;
+			   const char* chars = (const char*)(Marshal::StringToHGlobalAnsi(s)).ToPointer();
+			   os = chars;
+			   Marshal::FreeHGlobal(IntPtr((void*)chars));
 			}
 	};
 }
