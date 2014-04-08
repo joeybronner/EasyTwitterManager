@@ -246,6 +246,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\winPin.h"
+				>
+			</File>
+			<File
 				RelativePath=".\winSettings.h"
 				>
 			</File>

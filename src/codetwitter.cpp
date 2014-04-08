@@ -7,9 +7,9 @@
 int choixUser = 99;
 affichage a;
 twitCurl twitterObj;
-    std::string tmpStr, tmpStr2;
-    std::string replyMsg;
-    char tmpBuf[1024];
+    extern std::string tmpStr, tmpStr2;
+    extern std::string replyMsg;
+    extern char tmpBuf[1024];
 
 int _tmain(int argc, _TCHAR* argv[])
 {

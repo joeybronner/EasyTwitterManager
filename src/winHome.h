@@ -12,6 +12,7 @@
 #include <ctime>
 #include <time.h>
 #include "winSettings.h"
+#include "winPin.h"
 
 #using <mscorlib.dll>
 #using <System.dll>
@@ -22,6 +23,7 @@
 
 using namespace std;
 using namespace winSettings;
+using namespace winPin;
 
 namespace winHome {
 
@@ -272,9 +274,9 @@ namespace winHome {
 
 					/* twitCurl initializing */
 					twitCurl twitterObj;
-					string tmpStr, tmpStr2;
-					string replyMsg;
-					char tmpBuf[1024];
+					extern string tmpStr, tmpStr2;
+					extern string replyMsg;
+					extern char tmpBuf[1024];
 
 					/* OAuth flow begins */
 					twitterObj.getOAuth().setConsumerKey(	 std::string( "vlC5S1NCMHHg8mD1ghPRkA" ) );
@@ -331,19 +333,27 @@ namespace winHome {
 						if (MessageBox::Show(String::Concat("Vous devez être redirigé vers ",authUrl.c_str()," pour autoriser l'application."),"Authentification EasyTwitterManager", MessageBoxButtons::YesNo,MessageBoxIcon::Question)==::DialogResult::Yes)
 						{
 							writeConsole(String::Concat("Ouverture de la page web : ",authUrl.c_str()));
-							System::Diagnostics::Process::Start(authUrl.c_str());
+							//System::Diagnostics::Process::Start(authUrl.c_str());
+
+							// to get the pin value
+							windowPin* wPin = new windowPin();
+							wPin->ShowDialog();
+
+							writeConsole(String::Concat("Pin entré : ",tmpStr.c_str()));
+
+							//twitterObj.getOAuth().setOAuthPin( tmpStr );
+
+
+
+
 						}
 						else {
-							writeConsole(String::Concat("L'initialisation recquiert une redirection vers internet."));
+							writeConsole("L'initialisation recquiert une redirection vers internet.");
 						}
 
 
-						//MessageBox::Show(textBox1.Text,"");
 
-						// get the pin value
-						// --> pop-up
-						// tmpStr = return value;
-						//twitterObj.getOAuth().setOAuthPin( tmpStr );
+						
 					}
 
 
