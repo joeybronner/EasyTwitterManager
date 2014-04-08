@@ -89,7 +89,14 @@ namespace winHome {
 				this->btAddAccount->TabIndex = 0;
 				this->btAddAccount->Text = L"Ajouter";
 				this->btAddAccount->UseVisualStyleBackColor = true;
+				this->btAddAccount->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->btAddAccount->Click += new System::EventHandler(this, &windowHome::btAddAccount_Click);
+				this->btAddAccount->ForeColor = System::Drawing::Color::White;
+				this->btAddAccount->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+				this->btAddAccount->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
+				this->btAddAccount->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
+				this->btAddAccount->FlatAppearance->BorderSize = 0;
+
 
 			// btConfig, general app settings
 				this->btConfig = new System::Windows::Forms::Button();
