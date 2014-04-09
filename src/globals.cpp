@@ -15,7 +15,7 @@ using namespace std;
 
 
 /* if logged = 1 ; else = 0 */
-int loggedIn = 99;
+int loggedIn = 0;
 
 /* twitter global variables */
 string tmpStr, tmpStr2;
