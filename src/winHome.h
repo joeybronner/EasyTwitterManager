@@ -12,6 +12,7 @@
 #include <ctime>
 #include <time.h>
 #include "winSettings.h"
+#include "winLog.h"
 #include "winPin.h"
 
 #using <mscorlib.dll>
@@ -24,6 +25,7 @@
 using namespace std;
 using namespace winSettings;
 using namespace winPin;
+using namespace winLog;
 
 namespace winHome {
 
@@ -41,8 +43,27 @@ namespace winHome {
 		windowHome(void)
 		{		
 			InitializeComponent();
-			//extern int loggedIn;
-			//writeConsole(String::Concat("test",loggedIn.ToString()));
+			this->Show();
+			extern bool loggedIn;
+			windowLog* wLog = new windowLog();
+			if (!loggedIn)
+			{
+				windowLog* wLog = new windowLog();
+				wLog->ShowDialog();
+			}
+	
+			/* set username */
+			setUsername();
+
+			/* get username */
+			extern twitCurl twitterObj;
+			string user = twitterObj.getTwitterUsername();
+			writeConsole(String::Concat("Connecté en tant que : @", user.c_str()));
+
+			//string provisoire;
+			//twitterObj.getLastWebResponse(provisoire);
+			//writeConsole(String::Concat("Test :", provisoire.c_str()));
+
 		}
 
 	protected:
@@ -56,10 +77,8 @@ namespace winHome {
 
 	public:
 		System::ComponentModel::Container*		components;
-		System::Windows::Forms::Button*			btAddAccount;
 		System::Windows::Forms::PictureBox*		imageLogo;
 		System::Windows::Forms::ListBox*		consoleFooter;
-		System::Windows::Forms::TextBox*		tbAccount;
 		System::Windows::Forms::Button*			btConfig;
 		System::Windows::Forms::Button*			btInfos;
 		System::Windows::Forms::Button*			btLogin;
@@ -83,22 +102,6 @@ namespace winHome {
 				System::Drawing::Icon* iconETM = System::Drawing::Icon::FromHandle( Hicon );
 				this->Icon = iconETM;
 
-			// button add to follow
-				this->btAddAccount = new System::Windows::Forms::Button();
-				this->btAddAccount->Location = System::Drawing::Point(220, 200);
-				this->btAddAccount->Name = L"btAddAccount";
-				this->btAddAccount->Size = System::Drawing::Size(50, 20);
-				this->btAddAccount->TabIndex = 0;
-				this->btAddAccount->Text = L"Ajouter";
-				this->btAddAccount->UseVisualStyleBackColor = true;
-				this->btAddAccount->Cursor = System::Windows::Forms::Cursors::Hand;
-				this->btAddAccount->Click += new System::EventHandler(this, &windowHome::btAddAccount_Click);
-				this->btAddAccount->ForeColor = System::Drawing::Color::White;
-				this->btAddAccount->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-				this->btAddAccount->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
-				this->btAddAccount->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
-				this->btAddAccount->FlatAppearance->BorderSize = 0;
-
 			// btConfig, general app settings
 				this->btConfig = new System::Windows::Forms::Button();
 				this->btConfig->BackColor = System::Drawing::Color::LightSkyBlue;	
@@ -118,7 +121,7 @@ namespace winHome {
 			// btLogin, to log in twitter using twitcurl
 				this->btLogin = new System::Windows::Forms::Button();
 				this->btLogin->BackColor = System::Drawing::Color::LightSkyBlue;	
-				this->btLogin->Image = System::Drawing::Image::FromFile("../img/ic_login.png");
+				this->btLogin->Image = System::Drawing::Image::FromFile("../img/ic_logout.png");
 				this->btLogin->Location = System::Drawing::Point(5, 5);
 				this->btLogin->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->btLogin->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
@@ -157,13 +160,6 @@ namespace winHome {
 				this->imageLogo->TabIndex = 0;
 				this->imageLogo->TabStop = false;
 
-			// textbox account for add someone to the list of people to follow
-				this->tbAccount = new System::Windows::Forms::TextBox();
-				this->tbAccount->Location = System::Drawing::Point(110, 200);
-				this->tbAccount->Name = L"tbAccount";
-				this->tbAccount->Size = System::Drawing::Size(100, 20);
-				this->tbAccount->TabIndex = 3;
-
 			// text box used to set up the pin auth
 				this->tbNewTweet = new System::Windows::Forms::TextBox();
 				this->tbNewTweet->BorderStyle = System::Windows::Forms::BorderStyle::None;
@@ -201,16 +197,13 @@ namespace winHome {
 				this->consoleFooter->TabIndex = 2;
 				this->consoleFooter->BorderStyle = System::Windows::Forms::BorderStyle::None;
 				this->consoleFooter->ScrollAlwaysVisible = true;
-				writeConsole("Initialisation de la fenêtre d'accueil.");
 
 			// adding the controls to the window
 				this->SuspendLayout();
-				this->Controls->Add(this->btAddAccount);
 				this->Controls->Add(this->imageLogo);
 				this->Controls->Add(this->btAddTweet);
 				this->Controls->Add(this->consoleFooter);
 				this->Controls->Add(this->tbNewTweet);
-				this->Controls->Add(this->tbAccount);
 				this->Controls->Add(this->btConfig);
 				this->Controls->Add(this->btInfos);
 				this->Controls->Add(this->btLogin);
@@ -218,7 +211,6 @@ namespace winHome {
 				this->PerformLayout();
 		}
 #pragma endregion
-
 	public: System::Void btAddTweet_Click(System::Object* sender, System::EventArgs* e)
 			{
 				extern twitCurl twitterObj;
@@ -230,54 +222,12 @@ namespace winHome {
 					extern string replyMsg;
 					twitterObj.getLastWebResponse( replyMsg );
 					writeConsole(String::Concat("ajouté : ",replyMsg.c_str()));
+					tbNewTweet->Text = "";
 				} else {
 					writeConsole("erreur");
 				}
 			}
-	public: System::Void btAddAccount_Click(System::Object* sender, System::EventArgs* e)
-			{
 
-				// get the tb value
-				String* toAdd = this->tbAccount->Text;
-
-				if (this->tbAccount->Text->Length > 0)
-				{
-					String* actualContent;
-
-					// adding value to the file
-					String* fileName = "../files/tofollow.txt";
-					String* line;
-					int count = 0;
-					try 
-					{
-						// reading file
-						StreamReader* sr = new StreamReader(fileName);
-						while (line = sr->ReadLine())
-						{
-							actualContent = line;
-						}
-						sr->Close();
-
-						// writing file
-						StreamWriter* sw = new StreamWriter(fileName);
-						sw->Write(actualContent);
-						sw->Write("|");
-						sw->Write(toAdd);
-						sw->Close();
-
-						// logs and msgbox 
-						String* msgAjout = String::Concat("Ajout de ",toAdd," à la file d'attente.");
-						writeConsole(msgAjout);
-					}
-					catch (Exception* e)
-					{
-						MessageBox::Show("Erreur lors de l'ajout.");
-					}
-					
-					// deleting the value in textbox
-					this->tbAccount->Text = "";
-				}
-			}
 
 	public: System::Void btConfig_Click(System::Object* sender, System::EventArgs* e)
 			{
@@ -322,135 +272,10 @@ namespace winHome {
 			}
 	public: System::Void btLogin_Click(System::Object* sender, System::EventArgs* e)
 			{
-				try {
-					/* ìnit message on console */
-					writeConsole("Début de l'initialisation de l'API Twitter.");
-
-					/* twitCurl initializing */
-					extern twitCurl twitterObj;
-					extern string tmpStr, tmpStr2;
-					extern string replyMsg;
-					extern char tmpBuf[1024];
-
-					/* OAuth flow begins */
-					twitterObj.getOAuth().setConsumerKey(	 std::string( "vlC5S1NCMHHg8mD1ghPRkA" ) );
-					twitterObj.getOAuth().setConsumerSecret( std::string( "3w4cIrHyI3IYUZW5O2ppcFXmsACDaENzFdLIKmEU84" ) );
-
-					/* check if we alredy have OAuth access token from a previous run */
-
-					std::ifstream oAuthTokenKeyIn("../txt/twitterClient_token_key.txt");
-					std::ifstream oAuthTokenSecretIn("../txt/twitterClient_token_secret.txt");
-
-					string myOAuthAccessTokenKey("");
-					string myOAuthAccessTokenSecret("");
-
-					if (oAuthTokenKeyIn && oAuthTokenSecretIn)
-					{
-						writeConsole("Récupération des clés d'authentification d'une ancienne connexion.");
-
-						// get the key from file
-						String* key = System::IO::File::ReadAllText("../txt/twitterClient_token_key.txt");
-						MarshalString(key,myOAuthAccessTokenKey);
-
-						// get the secret from file
-						String* secret = System::IO::File::ReadAllText("../txt/twitterClient_token_secret.txt");
-						MarshalString(secret,myOAuthAccessTokenSecret);
-
-						if( myOAuthAccessTokenKey.size() && myOAuthAccessTokenSecret.size() )
-						{
-							/* If we already have these keys, then no need to go through auth again */
-							writeConsole("Clés récupérées avec succès.");
-							writeConsole(String::Concat("Key   : ", myOAuthAccessTokenKey.c_str()));
-							writeConsole(String::Concat("Secret: ", myOAuthAccessTokenSecret.c_str()));
-							
-							/* authentification */
-							twitterObj.getOAuth().setOAuthTokenKey( myOAuthAccessTokenKey );
-							twitterObj.getOAuth().setOAuthTokenSecret( myOAuthAccessTokenSecret );
-						}
-						
-					}
-					else {
-						writeConsole("Aucune ancienne connexion détectée.");
-						
-						/* get request token key and secret */
-						std::string authUrl;
-						twitterObj.oAuthRequestToken( authUrl );
-
-						if (MessageBox::Show(String::Concat("Vous devez être redirigé vers ",authUrl.c_str()," pour autoriser l'application."),"Authentification EasyTwitterManager", MessageBoxButtons::YesNo,MessageBoxIcon::Question)==::DialogResult::Yes)
-						{
-							writeConsole(String::Concat("Ouverture de la page web : ",authUrl.c_str()));
-							System::Diagnostics::Process::Start(authUrl.c_str());
-
-							// to get the pin value
-							windowPin* wPin = new windowPin();
-							wPin->ShowDialog();
-
-							writeConsole(String::Concat("PIN entré : ",tmpStr.c_str()));
-
-							// auth with the key entered by the user
-							twitterObj.getOAuth().setOAuthPin( tmpStr );
-							twitterObj.oAuthAccessToken();
-
-							/* authentification */
-							twitterObj.getOAuth().getOAuthTokenKey( myOAuthAccessTokenKey );
-							twitterObj.getOAuth().getOAuthTokenSecret( myOAuthAccessTokenSecret );
-
-							/* Saving these keys in a text file */
-							std::ofstream oAuthTokenKeyOut;
-							std::ofstream oAuthTokenSecretOut;
-
-							oAuthTokenKeyOut.open( "../txt/twitterClient_token_key.txt" );
-							oAuthTokenSecretOut.open( "../txt/twitterClient_token_secret.txt" );
-
-							// deleting data who are already in this file
-							oAuthTokenKeyOut.clear();
-							oAuthTokenSecretOut.clear();
-
-							// adding the new keys
-							oAuthTokenKeyOut << myOAuthAccessTokenKey.c_str();
-							oAuthTokenSecretOut << myOAuthAccessTokenSecret.c_str();
-
-							// closing files
-							oAuthTokenKeyOut.close();
-							oAuthTokenSecretOut.close();
-						}
-						else {
-							writeConsole("L'initialisation requiert une redirection vers internet.");
-							return;
-						}
-
-					}
-
-					// check if connection if ok
-
-					if( twitterObj.accountVerifyCredGet() )
-					{
-						//twitterObj.getLastWebResponse( replyMsg );
-						
-						replyMsg = twitterObj.timelineUserGet(true,false,1,"", false);
-						writeConsole(String::Concat("test : ",replyMsg.c_str()));
-					}
-					else
-					{
-						twitterObj.getLastCurlError( replyMsg );
-						writeConsole(replyMsg.c_str());
-					}
-
-					/*
-						CONNECTION ESTABLISHED !!! 
-						ìnit message on console
-					*/
-					writeConsole("Fin de l'initialisation de l'API Twitter.");
-
-				}
-				catch (int e) {
-					/* error message */
-					writeConsole("Erreur lors de l'initialisation de l'API Twitter.");
-					writeConsole(e.ToString());
-				}
-
-				
+				windowLog* wLog = new windowLog();
+				wLog->ShowDialog();
 			}
+
 	public: void writeConsole(String* msg)
 			{
 				String* currentDate = getDateTime();
@@ -465,5 +290,86 @@ namespace winHome {
 			   os = chars;
 			   Marshal::FreeHGlobal(IntPtr((void*)chars));
 			}
+
+	private: string ExtractString( std::string source, std::string start, std::string end )
+			{
+				std::string::size_type startIndex = source.find( start );
+
+				 if( startIndex == std::string::npos )
+				 {
+					string emptyString = "";
+	 				return emptyString;
+				 }
+				
+				 startIndex += start.length();
+
+				 std::string::size_type endIndex = source.find( end, startIndex );
+
+				 return source.substr( startIndex, endIndex - startIndex );
+			}
+
+	public: void setUsername()
+			{
+				extern twitCurl twitterObj;
+				string response;
+				twitterObj.getLastWebResponse(response);
+				unsigned pos = response.find("screen_name"); 
+				string aftername = response.substr(pos+12); 
+				string username = ExtractString(aftername, "\"", "\"" );
+				twitterObj.setTwitterUsername(username);
+			}
+/* 
+-------------------
+      RESERVE 
+-------------------
+
+	public: System::Void btAddAccount_Click(System::Object* sender, System::EventArgs* e)
+			{
+				// get the tb value
+				String* toAdd = this->tbAccount->Text;
+
+				if (this->tbAccount->Text->Length > 0)
+				{
+					String* actualContent;
+
+					// adding value to the file
+					String* fileName = "../files/tofollow.txt";
+					String* line;
+					int count = 0;
+					try 
+					{
+						// reading file
+						StreamReader* sr = new StreamReader(fileName);
+						while (line = sr->ReadLine())
+						{
+							actualContent = line;
+						}
+						sr->Close();
+
+						// writing file
+						StreamWriter* sw = new StreamWriter(fileName);
+						sw->Write(actualContent);
+						sw->Write("|");
+						sw->Write(toAdd);
+						sw->Close();
+
+						// logs and msgbox 
+						String* msgAjout = String::Concat("Ajout de ",toAdd," à la file d'attente.");
+						writeConsole(msgAjout);
+					}
+					catch (Exception* e)
+					{
+						MessageBox::Show("Erreur lors de l'ajout.");
+					}
+					
+					// deleting the value in textbox
+					this->tbAccount->Text = "";
+				}
+			}
+
+
+
+*/
+
 	};
 }

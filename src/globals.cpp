@@ -13,9 +13,11 @@
 
 using namespace std;
 
+/* closing app if true */
+bool endApp = false;
 
 /* if logged = 1 ; else = 0 */
-int loggedIn = 0;
+bool loggedIn = false;
 
 /* twitter global variables */
 string tmpStr, tmpStr2;

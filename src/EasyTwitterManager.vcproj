@@ -246,6 +246,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\winLog.h"
+				>
+			</File>
+			<File
 				RelativePath=".\winPin.h"
 				>
 			</File>
