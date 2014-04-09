@@ -67,7 +67,7 @@ namespace winLog {
 				this->Size = System::Drawing::Size(250,250);
 				this->BackColor = System::Drawing::Color::LightSkyBlue;
 				this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
-				this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedToolWindow;
+				this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
 				this->ControlBox = false;
 				this->Text = "Easy Twitter Manager | Welcome";
 				//icon

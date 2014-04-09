@@ -57,12 +57,11 @@ namespace winHome {
 
 			/* get username */
 			extern twitCurl twitterObj;
-			string user = twitterObj.getTwitterUsername();
+			extern string user;
+			user = twitterObj.getTwitterUsername();
 			writeConsole(String::Concat("Connecté en tant que : @", user.c_str()));
 
-			//string provisoire;
-			//twitterObj.getLastWebResponse(provisoire);
-			//writeConsole(String::Concat("Test :", provisoire.c_str()));
+			this->lbWelcome->Text = String::Concat("Bonjour @",user.c_str(),"!");
 
 		}
 
@@ -84,6 +83,7 @@ namespace winHome {
 		System::Windows::Forms::Button*			btLogin;
 		System::Windows::Forms::TextBox*		tbNewTweet;
 		System::Windows::Forms::Button*			btAddTweet;
+		System::Windows::Forms::Label*			lbWelcome;
 
 
 #pragma region Windows Form Designer generated code
@@ -118,6 +118,18 @@ namespace winHome {
 				this->btConfig->UseVisualStyleBackColor = false;
 				this->btConfig->Click += new System::EventHandler(this, &windowHome::btConfig_Click);
 
+			// welcome label message (label)
+				this->lbWelcome = new System::Windows::Forms::Label();
+				this->lbWelcome->AutoSize = true;
+				this->lbWelcome->Font = new System::Drawing::Font(L"Open Sans", 16, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point);
+				this->lbWelcome->ForeColor = System::Drawing::Color::White;
+				this->lbWelcome->Location = System::Drawing::Point(100, 140);
+				this->lbWelcome->Name = L"lbWelcome";
+				this->lbWelcome->Size = System::Drawing::Size(94, 27);
+				this->lbWelcome->BackColor = System::Drawing::Color::DarkOrange;
+				//this->lbWelcome->TabIndex = 4;
+				//this->lbWelcome->Text = L"Hello @Joeybr";
+
 			// btLogin, to log in twitter using twitcurl
 				this->btLogin = new System::Windows::Forms::Button();
 				this->btLogin->BackColor = System::Drawing::Color::LightSkyBlue;	
@@ -151,6 +163,7 @@ namespace winHome {
 
 			// logo on the top of window
 				this->imageLogo = new System::Windows::Forms::PictureBox();
+				this->imageLogo->BackColor = System::Drawing::Color::PowderBlue;
 				//this->imageLogo->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 				this->imageLogo->Location = System::Drawing::Point(100, 10);
 				this->imageLogo->Name = L"imageLogo";
@@ -206,6 +219,7 @@ namespace winHome {
 				this->Controls->Add(this->tbNewTweet);
 				this->Controls->Add(this->btConfig);
 				this->Controls->Add(this->btInfos);
+				this->Controls->Add(this->lbWelcome);
 				this->Controls->Add(this->btLogin);
 				this->ResumeLayout(false);
 				this->PerformLayout();
