@@ -24,3 +24,4 @@ string tmpStr, tmpStr2;
 string replyMsg;
 char tmpBuf[1024];
 string user;
+string lang;

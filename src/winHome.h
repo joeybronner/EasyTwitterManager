@@ -14,6 +14,7 @@
 #include "winSettings.h"
 #include "winLog.h"
 #include "winPin.h"
+#include "twitterGet.h"
 
 #using <mscorlib.dll>
 #using <System.dll>
@@ -37,10 +38,13 @@ namespace winHome {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
+	/* ------- Variables ------- */
+	twitterGet twiGet;			// all methods to get informations
+
 	public __gc class windowHome : public System::Windows::Forms::Form
 	{
-	public:
-		windowHome(void)
+
+	public: windowHome(void)
 		{		
 			InitializeComponent();
 			this->Show();
@@ -60,41 +64,12 @@ namespace winHome {
 			extern string user;
 			user = twitterObj.getTwitterUsername();
 			writeConsole(String::Concat("Connecté en tant que : @", user.c_str()));
-
 			this->lbWelcome->Text = String::Concat("Bonjour @",user.c_str(),"!");
-			
-			string joeybr = getUserID("joeybr");
-			writeConsole(joeybr.c_str());
 
-
-			string replyMsg;
-			if (twitterObj.friendshipCreate(joeybr, true))
-			{
-				twitterObj.getLastWebResponse(replyMsg);
-				writeConsole(replyMsg.c_str());
-			}
-			else
-			{
-				twitterObj.getLastCurlError( replyMsg );
-				writeConsole(replyMsg.c_str());
-			}
-
-
-
-
-			//string replyMsg;
-			//if (twitterObj.followersGet())
-			//{
-			//	twitterObj.getLastWebResponse( replyMsg );
-			//	writeConsole(replyMsg.c_str());
-			//}
-			//else
-			//{
-			//	writeConsole("erreur");
-			//}
-
-			
-
+			/* follow someone */
+			string id		= twiGet.getUserID("joeybr");
+			string suivi	= twiGet.followByID(id);
+			writeConsole(suivi.c_str());
 			
 		}
 
@@ -380,23 +355,26 @@ namespace winHome {
 				twitterObj.setTwitterUsername(username);
 			}
 
-	public: std::string getUserID(string nom)
+	public: int getFollowersCount(string nom)
 			{
 				extern twitCurl twitterObj; 
 				string replyMsg;
-				if(twitterObj.userGet(nom, false))
+				if(twitterObj.userGet(nom, true))
 				{
 					twitterObj.getLastWebResponse( replyMsg );
+					writeConsole(replyMsg.c_str());
 				}
 				else
 				{
 					replyMsg = "erreur";
 				}
 				
-				unsigned pos = replyMsg.find("id_str"); 
-				string afterid = replyMsg.substr(pos+7);
-				replyMsg = ExtractString(afterid, "\"", "\"" );
-				return replyMsg;
+				unsigned pos = replyMsg.find("followers_count"); 
+				string afterid = replyMsg.substr(pos+16);
+				replyMsg = ExtractString(afterid, ":", "," );
+				int count;
+				istringstream (replyMsg) >> count;
+				return count;
 			}
 /* 
 -------------------
