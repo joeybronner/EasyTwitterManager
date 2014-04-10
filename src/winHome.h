@@ -62,7 +62,40 @@ namespace winHome {
 			writeConsole(String::Concat("Connecté en tant que : @", user.c_str()));
 
 			this->lbWelcome->Text = String::Concat("Bonjour @",user.c_str(),"!");
+			
+			string joeybr = getUserID("joeybr");
+			writeConsole(joeybr.c_str());
 
+
+			string replyMsg;
+			if (twitterObj.friendshipCreate(joeybr, true))
+			{
+				twitterObj.getLastWebResponse(replyMsg);
+				writeConsole(replyMsg.c_str());
+			}
+			else
+			{
+				twitterObj.getLastCurlError( replyMsg );
+				writeConsole(replyMsg.c_str());
+			}
+
+
+
+
+			//string replyMsg;
+			//if (twitterObj.followersGet())
+			//{
+			//	twitterObj.getLastWebResponse( replyMsg );
+			//	writeConsole(replyMsg.c_str());
+			//}
+			//else
+			//{
+			//	writeConsole("erreur");
+			//}
+
+			
+
+			
 		}
 
 	protected:
@@ -84,6 +117,7 @@ namespace winHome {
 		System::Windows::Forms::TextBox*		tbNewTweet;
 		System::Windows::Forms::Button*			btAddTweet;
 		System::Windows::Forms::Label*			lbWelcome;
+		System::Windows::Forms::Label*			lbNewTweet;
 
 
 #pragma region Windows Form Designer generated code
@@ -126,7 +160,7 @@ namespace winHome {
 				this->lbWelcome->Location = System::Drawing::Point(100, 140);
 				this->lbWelcome->Name = L"lbWelcome";
 				this->lbWelcome->Size = System::Drawing::Size(94, 27);
-				this->lbWelcome->BackColor = System::Drawing::Color::DarkOrange;
+				this->lbWelcome->BackColor = System::Drawing::Color::SteelBlue;
 				//this->lbWelcome->TabIndex = 4;
 				//this->lbWelcome->Text = L"Hello @Joeybr";
 
@@ -177,7 +211,7 @@ namespace winHome {
 				this->tbNewTweet = new System::Windows::Forms::TextBox();
 				this->tbNewTweet->BorderStyle = System::Windows::Forms::BorderStyle::None;
 				this->tbNewTweet->Font = new System::Drawing::Font(L"Open Sans", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point);
-				this->tbNewTweet->Location = System::Drawing::Point(100, 430);
+				this->tbNewTweet->Location = System::Drawing::Point(200, 185);
 				this->tbNewTweet->Name = L"tbNewTweet";
 				this->tbNewTweet->Size = System::Drawing::Size(500, 40);
 				this->tbNewTweet->TextAlign = System::Windows::Forms::HorizontalAlignment::Left;
@@ -186,7 +220,7 @@ namespace winHome {
 
 			// button add tweet
 				this->btAddTweet = new System::Windows::Forms::Button();
-				this->btAddTweet->Location = System::Drawing::Point(620, 430);
+				this->btAddTweet->Location = System::Drawing::Point(710, 185);
 				this->btAddTweet->Name = L"btAddTweet";
 				this->btAddTweet->Size = System::Drawing::Size(70, 20);
 				this->btAddTweet->TabIndex = 0;
@@ -199,6 +233,18 @@ namespace winHome {
 				this->btAddTweet->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
 				this->btAddTweet->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
 				this->btAddTweet->FlatAppearance->BorderSize = 0;
+
+			// welcome label message (label)
+				this->lbNewTweet = new System::Windows::Forms::Label();
+				this->lbNewTweet->AutoSize = true;
+				this->lbNewTweet->Font = new System::Drawing::Font(L"Open Sans", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point);
+				this->lbNewTweet->ForeColor = System::Drawing::Color::White;
+				this->lbNewTweet->Location = System::Drawing::Point(100, 185);
+				this->lbNewTweet->Name = L"lbNewTweet";
+				this->lbNewTweet->Size = System::Drawing::Size(94, 27);
+				//this->lbNewTweet->BackColor = System::Drawing::Color::SteelBlue;
+				//this->lbNewTweet->TabIndex = 4;
+				this->lbNewTweet->Text = L"Quoi de neuf ?";
 
 			// console footer
 				this->consoleFooter = new System::Windows::Forms::ListBox();
@@ -221,6 +267,7 @@ namespace winHome {
 				this->Controls->Add(this->btInfos);
 				this->Controls->Add(this->lbWelcome);
 				this->Controls->Add(this->btLogin);
+				this->Controls->Add(this->lbNewTweet);
 				this->ResumeLayout(false);
 				this->PerformLayout();
 		}
@@ -331,6 +378,25 @@ namespace winHome {
 				string aftername = response.substr(pos+12); 
 				string username = ExtractString(aftername, "\"", "\"" );
 				twitterObj.setTwitterUsername(username);
+			}
+
+	public: std::string getUserID(string nom)
+			{
+				extern twitCurl twitterObj; 
+				string replyMsg;
+				if(twitterObj.userGet(nom, false))
+				{
+					twitterObj.getLastWebResponse( replyMsg );
+				}
+				else
+				{
+					replyMsg = "erreur";
+				}
+				
+				unsigned pos = replyMsg.find("id_str"); 
+				string afterid = replyMsg.substr(pos+7);
+				replyMsg = ExtractString(afterid, "\"", "\"" );
+				return replyMsg;
 			}
 /* 
 -------------------
