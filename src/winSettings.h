@@ -166,14 +166,31 @@ namespace winSettings {
 				this->tbPswdProxy->TabIndex = 3;
 
 			// button to save changes
+				//this->btValidateChanges = new System::Windows::Forms::Button();
+				//this->btValidateChanges->Location = System::Drawing::Point(130, 330);
+				//this->btValidateChanges->Name = L"btValidateChanges";
+				//this->btValidateChanges->Size = System::Drawing::Size(120, 30);
+				//this->btValidateChanges->TabIndex = 0;
+
+				//this->btValidateChanges->Text = L"Appliquer";
+				//this->btValidateChanges->UseVisualStyleBackColor = true;
+				//->btValidateChanges->Click += new System::EventHandler(this, &windowSettings::btValidateChanges_Click);
+				
 				this->btValidateChanges = new System::Windows::Forms::Button();
-				this->btValidateChanges->Location = System::Drawing::Point(130, 330);
+				this->btValidateChanges->BackColor = System::Drawing::Color::LightSkyBlue;	
+				this->btValidateChanges->Image = System::Drawing::Image::FromFile("../img/ic_submit.png");
+				this->btValidateChanges->Location = System::Drawing::Point(150, 280);
+				this->btValidateChanges->Cursor = System::Windows::Forms::Cursors::Hand;
+				this->btValidateChanges->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+				this->btValidateChanges->FlatAppearance->MouseOverBackColor = System::Drawing::Color::LightSkyBlue;
+				this->btValidateChanges->FlatAppearance->MouseDownBackColor = System::Drawing::Color::LightSkyBlue;
+				this->btValidateChanges->FlatAppearance->BorderSize = 0;
 				this->btValidateChanges->Name = L"btValidateChanges";
-				this->btValidateChanges->Size = System::Drawing::Size(120, 30);
+				this->btValidateChanges->Size = System::Drawing::Size(90, 90);
 				this->btValidateChanges->TabIndex = 0;
-				this->btValidateChanges->Text = L"Appliquer";
-				this->btValidateChanges->UseVisualStyleBackColor = true;
-				this->btValidateChanges->Click += new System::EventHandler(this, &windowSettings::btValidateChanges_Click);
+				this->btValidateChanges->UseVisualStyleBackColor = false;
+
+
 
 			// adding the controls to the window
 				this->Controls->Add(this->lbReglages);
@@ -196,6 +213,7 @@ namespace winSettings {
 		{
 			// here, the treatment for save all the user's changes 
 			// ...
+			
 			this->Close();
 		}
 	};

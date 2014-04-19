@@ -21,8 +21,22 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,PWSTR pCmdLine,
 {
 	System::Threading::Thread::CurrentThread->ApartmentState = System::Threading::ApartmentState::STA;
 	windowHome* wHome = new windowHome();
+
+	/* twitCurl initialization */
 	twitCurl twitterObj;
+
+	/* database initialization */
+	String* sCon = "Provider=Microsoft.SQLSERVER.CE.OLEDB.3.5;Data Source=c:\temp\sqlcompact.sdf;";
+
+
+	/* running app */
 	Application::Run(wHome);
 
 	return 0;
+}
+
+void connection_database()
+{
+	
+
 }

@@ -66,7 +66,20 @@ namespace winHome {
 			writeConsole(String::Concat("Connecté en tant que : @", user.c_str()));
 			this->lbWelcome->Text = String::Concat("Bonjour @",user.c_str(),"!");
 
-			/* follow someone */
+			/* follow someone 
+			System::Data::SqlClient::SqlConnection* SqlConnection = new System::Data::SqlClient::SqlConnection();
+			SqlConnection->ConnectionString = "Data Source=..\database\MyDatabase#2.sdf; Initial Catalog=MyDatabase#2; Integrated Security=True";;
+			SqlConnection->Open();
+			*/
+
+			/*
+			String* myConnectString = S"Persist Security Info=False;Integrated Security=SSPI;database=northwind;server=mySQLServer";
+			SqlConnection* myConnection = new SqlConnection(myConnectString);
+			myConnection->Open();
+			MessageBox::Show(String::Format( S"ServerVersion: {0}\nDatasource: {1}", myConnection->ServerVersion, myConnection->DataSource ));
+			myConnection->Close();
+			*/
+
 			string id		= twiGet.getUserID("joeybr");
 			string suivi	= twiGet.followByID(id);
 			writeConsole(suivi.c_str());

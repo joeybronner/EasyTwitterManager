@@ -83,7 +83,7 @@ namespace winLog {
 				this->btLogin->Location = System::Drawing::Point(60, 50);
 				this->btLogin->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->btLogin->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-				this->btLogin->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
+				this->btLogin->FlatAppearance->MouseOverBackColor = System::Drawing::Color::PowderBlue;
 				this->btLogin->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
 				this->btLogin->FlatAppearance->BorderSize = 0;
 				this->btLogin->Name = L"btLogin";
@@ -99,7 +99,7 @@ namespace winLog {
 				this->btExit->Location = System::Drawing::Point(60, 180);
 				this->btExit->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->btExit->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-				this->btExit->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
+				this->btExit->FlatAppearance->MouseOverBackColor = System::Drawing::Color::PowderBlue;
 				this->btExit->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
 				this->btExit->FlatAppearance->BorderSize = 0;
 				this->btExit->Name = L"btExit";
@@ -130,7 +130,7 @@ namespace winLog {
 #pragma endregion
 	public: System::Void btExit_Click(System::Object* sender, System::EventArgs* e)
 			{
-				Application::Exit();
+				exit(1);
 			}
 	public: System::Void btLogin_Click(System::Object* sender, System::EventArgs* e)
 			{
