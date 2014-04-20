@@ -350,10 +350,10 @@ namespace winHome {
 				{
 					extern string replyMsg;
 					twitterObj.getLastWebResponse( replyMsg );
-					writeConsole(String::Concat("ajouté : ",replyMsg.c_str()));
+					writeConsole(String::Concat("Tweet envoyé: <",ajout.c_str(),">"));
 					tbNewTweet->Text = "";
 				} else {
-					writeConsole("erreur");
+					writeConsole(String::Concat("Erreur: <",ajout.c_str(),"> n'a pas été tweeté"));
 				}
 			}
 
