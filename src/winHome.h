@@ -81,9 +81,9 @@ namespace winHome {
 			*/
 
 
-			System::Data::SqlClient::SqlConnection* dbConnect = new System::Data::SqlClient::SqlConnection();
-			try
-			{
+			//System::Data::SqlClient::SqlConnection* dbConnect = new System::Data::SqlClient::SqlConnection();
+			//try
+			//{
 				/* database initialization */				
 				//dbConnect->ConnectionString = "Data Source=C:\Users\Joey Bronner\Google Drive\C++_Workspace\EasyTwitterManager\database\ETMdatabase.sdf;";
 				//dbConnect->ConnectionString = "Persist Security Info=False;Integrated Security=true;Initial Catalog=ETMdatabase;server=(local)";
@@ -97,17 +97,17 @@ namespace winHome {
 
 				//ADO::_ConnectionPtr conn;
 
-			}
-			catch (Exception* exerr)
-			{
+			//}
+			//catch (Exception* exerr)
+			//{
 				//MessageBox::Show(exerr);
 				//String* test = dbConnect->InfoMessage();
-				writeConsole("erreur");
-			}
+			//	writeConsole("erreur");
+			//}
 
-			string id		= twiGet.getUserID("joeybr");
-			string suivi	= twiGet.followByID(id);
-			writeConsole(suivi.c_str());
+			//string id		= twiGet.getUserID("joeybr");
+			//string suivi	= twiGet.followByID(id);
+			//writeConsole(suivi.c_str());
 			
 		}
 
@@ -377,8 +377,8 @@ namespace winHome {
 					{
 						string str;
 						str=token;
-						String* test = str.c_str();
-						this->listToFollow->Items->Add(test);
+						string userName = twiGet.getUserUsername(token);
+						this->listToFollow->Items->Add(String::Concat("",userName.c_str())); // il faut mettre un String*
 					}
 				}
 			}
