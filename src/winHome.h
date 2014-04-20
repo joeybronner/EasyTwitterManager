@@ -134,6 +134,8 @@ namespace winHome {
 		/* Load all ID followers */
 		System::Windows::Forms::TextBox*		tbAccountName;
 		System::Windows::Forms::Button*			btLoadListFollowers;
+		System::Windows::Forms::ListBox*		listToFollow;
+		System::Windows::Forms::Label*			lbWaitingList;
 
 
 #pragma region Windows Form Designer generated code
@@ -193,8 +195,16 @@ namespace winHome {
 				this->lbWelcome->Name = L"lbWelcome";
 				this->lbWelcome->Size = System::Drawing::Size(94, 27);
 				this->lbWelcome->BackColor = System::Drawing::Color::SteelBlue;
-				//this->lbWelcome->TabIndex = 4;
-				//this->lbWelcome->Text = L"Hello @Joeybr";
+
+			// wainting list label message (label)
+				this->lbWaitingList = new System::Windows::Forms::Label();
+				this->lbWaitingList->AutoSize = true;
+				this->lbWaitingList->Font = new System::Drawing::Font(L"Open Sans", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point);
+				this->lbWaitingList->ForeColor = System::Drawing::Color::White;
+				this->lbWaitingList->Location = System::Drawing::Point(630, 220);
+				this->lbWaitingList->Name = L"lbWaitingList";
+				this->lbWaitingList->Size = System::Drawing::Size(94, 27);
+				this->lbWaitingList->Text = L"Liste d'attente";
 
 			// btLogin, to log in twitter using twitcurl
 				this->btLogin = new System::Windows::Forms::Button();
@@ -290,13 +300,26 @@ namespace winHome {
 			// console footer
 				this->consoleFooter = new System::Windows::Forms::ListBox();
 				this->consoleFooter->FormattingEnabled = true;
-				this->consoleFooter->Location = System::Drawing::Point(100, 460);
+				this->consoleFooter->Location = System::Drawing::Point(100, 490);
 				this->consoleFooter->Name = L"consoleFooter";
-				this->consoleFooter->Size = System::Drawing::Size(680, 100);
+				this->consoleFooter->Size = System::Drawing::Size(680, 70);
 				this->consoleFooter->Sorted = true;
 				this->consoleFooter->TabIndex = 2;
 				this->consoleFooter->BorderStyle = System::Windows::Forms::BorderStyle::None;
 				this->consoleFooter->ScrollAlwaysVisible = true;
+
+			// listBox who conain all the list to follow
+				this->listToFollow = new System::Windows::Forms::ListBox();
+				this->listToFollow->FormattingEnabled = true;
+				this->listToFollow->Location = System::Drawing::Point(630, 245);
+				this->listToFollow->Name = L"listToFollow";
+				this->listToFollow->Size = System::Drawing::Size(150, 200);
+				this->listToFollow->Sorted = false;
+				//this->listToFollow->TabIndex = 2;
+				this->listToFollow->BorderStyle = System::Windows::Forms::BorderStyle::None;
+				this->listToFollow->ScrollAlwaysVisible = true;
+				//this->listToFollow->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
+				
 
 			// adding the controls to the window
 				this->SuspendLayout();
@@ -309,6 +332,8 @@ namespace winHome {
 				this->Controls->Add(this->lbWelcome);
 				this->Controls->Add(this->tbAccountName);
 				this->Controls->Add(this->btLoadListFollowers);
+				this->Controls->Add(this->lbWaitingList);
+				this->Controls->Add(this->listToFollow);
 				this->Controls->Add(this->btLogin);
 				this->Controls->Add(this->lbNewTweet);
 				this->ResumeLayout(false);
@@ -337,11 +362,25 @@ namespace winHome {
 				String* tbValue = this->tbAccountName->Text;
 				string user;
 				MarshalString(tbValue,user);
-				/* get ID */
-				//string id = twiGet.getUserID(user);
-				//writeConsole(id.c_str());
-				/* get all following id */
-				twiGet.getAllFollowers(user);
+				/* get all followers id */
+				string folwrs = twiGet.getAllFollowers(user);
+				/* iteration */
+				char* chaineID;
+				char* token;
+				char* delim = ",";
+				chaineID = (char*)folwrs.c_str();
+				token = strtok(chaineID, delim);
+				while (token != NULL && token != "")
+				{
+					token = strtok(NULL, delim);
+					if (token!= NULL && token != "")
+					{
+						string str;
+						str=token;
+						String* test = str.c_str();
+						this->listToFollow->Items->Add(test);
+					}
+				}
 			}
 
 	public: System::Void btConfig_Click(System::Object* sender, System::EventArgs* e)

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\include\twitcurl.h"
 #include "windows.h"
+#include <vector>
 
 class twitterGet
 {
@@ -40,7 +41,7 @@ public:
 				return replyMsg;
 			}
 
-	void getAllFollowers(string nom)
+	std::string getAllFollowers(string nom)
 			{
 				/* init */
 				replyMsg = "";
@@ -54,18 +55,12 @@ public:
 					twitterObj.getLastWebResponse(replyMsg);
 					/* get cleaned string with all the ids */
 					replyMsg = ExtractString(replyMsg, "[", "]" );
-					/* iteration of all the */
-
 				}
 				else
 				{
 					replyMsg = "Erreur lors de l'exécution de 'followersIdsGet'";
 				}
-				MessageBox::Show(replyMsg.c_str());
-
-
-
-
+				return replyMsg;
 			}
 
 	std::string getUserUsername(string id)
