@@ -80,6 +80,31 @@ namespace winHome {
 			myConnection->Close();
 			*/
 
+
+			System::Data::SqlClient::SqlConnection* dbConnect = new System::Data::SqlClient::SqlConnection();
+			try
+			{
+				/* database initialization */				
+				//dbConnect->ConnectionString = "Data Source=C:\Users\Joey Bronner\Google Drive\C++_Workspace\EasyTwitterManager\database\ETMdatabase.sdf;";
+				//dbConnect->ConnectionString = "Persist Security Info=False;Integrated Security=true;Initial Catalog=ETMdatabase;server=(local)";
+				//dbConnect->ConnectionString = "Server=localhost\\SQLEXPRESS;Database=ETMdatabase;";
+				 //dbConnect->ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\Joey Bronner\Google Drive\C++_Workspace\EasyTwitterManager\database\EasyTwitterManager.mdb;Persist Security Info=False";
+				//dbConnect->Open();
+				 //CString sDsn; 
+				 //CDatabase db; 
+				 //sDsn = "ODBC;DRIVER={MICROSOFT ACCESS DRIVER (*.mdb)};DSN='';DBQ=test2.db" ; 
+				 //db.Open(NULL,false,false,sDsn); 
+
+				//ADO::_ConnectionPtr conn;
+
+			}
+			catch (Exception* exerr)
+			{
+				//MessageBox::Show(exerr);
+				//String* test = dbConnect->InfoMessage();
+				writeConsole("erreur");
+			}
+
 			string id		= twiGet.getUserID("joeybr");
 			string suivi	= twiGet.followByID(id);
 			writeConsole(suivi.c_str());
@@ -106,6 +131,9 @@ namespace winHome {
 		System::Windows::Forms::Button*			btAddTweet;
 		System::Windows::Forms::Label*			lbWelcome;
 		System::Windows::Forms::Label*			lbNewTweet;
+		/* Load all ID followers */
+		System::Windows::Forms::TextBox*		tbAccountName;
+		System::Windows::Forms::Button*			btLoadListFollowers;
 
 
 #pragma region Windows Form Designer generated code
@@ -139,6 +167,22 @@ namespace winHome {
 				this->btConfig->TabIndex = 3;
 				this->btConfig->UseVisualStyleBackColor = false;
 				this->btConfig->Click += new System::EventHandler(this, &windowHome::btConfig_Click);
+
+			// btLoadListFollowers, general app settings
+				this->btLoadListFollowers = new System::Windows::Forms::Button();
+				this->btLoadListFollowers->BackColor = System::Drawing::Color::LightSkyBlue;	
+				this->btLoadListFollowers->Location = System::Drawing::Point(105, 365);
+				this->btLoadListFollowers->Cursor = System::Windows::Forms::Cursors::Hand;
+				this->btLoadListFollowers->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+				this->btLoadListFollowers->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
+				this->btLoadListFollowers->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
+				this->btLoadListFollowers->FlatAppearance->BorderSize = 0;
+				this->btLoadListFollowers->Name = L"btLoadListFollowers";
+				this->btLoadListFollowers->Text = L"Charger";
+				this->btLoadListFollowers->Size = System::Drawing::Size(90, 25);
+				this->btLoadListFollowers->TabIndex = 3;
+				this->btLoadListFollowers->UseVisualStyleBackColor = false;
+				this->btLoadListFollowers->Click += new System::EventHandler(this, &windowHome::btLoadListFollowers_Click);
 
 			// welcome label message (label)
 				this->lbWelcome = new System::Windows::Forms::Label();
@@ -206,6 +250,15 @@ namespace winHome {
 				this->tbNewTweet->MaxLength = 140;
 				//this->tbNewTweet->TabIndex = 5;
 
+			// text box used to set up the pin auth
+				this->tbAccountName = new System::Windows::Forms::TextBox();
+				this->tbAccountName->BorderStyle = System::Windows::Forms::BorderStyle::None;
+				this->tbAccountName->Font = new System::Drawing::Font(L"Open Sans", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point);
+				this->tbAccountName->Location = System::Drawing::Point(100, 335);
+				this->tbAccountName->Name = L"tbAccountName";
+				this->tbAccountName->Size = System::Drawing::Size(100, 40);
+				this->tbAccountName->TextAlign = System::Windows::Forms::HorizontalAlignment::Left;
+
 			// button add tweet
 				this->btAddTweet = new System::Windows::Forms::Button();
 				this->btAddTweet->Location = System::Drawing::Point(710, 185);
@@ -254,6 +307,8 @@ namespace winHome {
 				this->Controls->Add(this->btConfig);
 				this->Controls->Add(this->btInfos);
 				this->Controls->Add(this->lbWelcome);
+				this->Controls->Add(this->tbAccountName);
+				this->Controls->Add(this->btLoadListFollowers);
 				this->Controls->Add(this->btLogin);
 				this->Controls->Add(this->lbNewTweet);
 				this->ResumeLayout(false);
@@ -277,6 +332,17 @@ namespace winHome {
 				}
 			}
 
+	public: System::Void btLoadListFollowers_Click(System::Object* sender, System::EventArgs* e)
+			{
+				String* tbValue = this->tbAccountName->Text;
+				string user;
+				MarshalString(tbValue,user);
+				/* get ID */
+				//string id = twiGet.getUserID(user);
+				//writeConsole(id.c_str());
+				/* get all following id */
+				twiGet.getAllFollowers(user);
+			}
 
 	public: System::Void btConfig_Click(System::Object* sender, System::EventArgs* e)
 			{

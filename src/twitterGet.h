@@ -7,6 +7,7 @@ class twitterGet
     
 private:    
     std::string replyMsg;
+	std::string nextCursor;
     
 public:
 
@@ -37,6 +38,34 @@ public:
 				string afterid = replyMsg.substr(pos+7);
 				replyMsg = ExtractString(afterid, "\"", "\"" );
 				return replyMsg;
+			}
+
+	void getAllFollowers(string nom)
+			{
+				/* init */
+				replyMsg = "";
+				nextCursor = "";
+				extern twitCurl twitterObj;
+
+				/* work */
+				string id = getUserID(nom);
+				if(twitterObj.followersIdsGet(nextCursor, id, true))
+				{
+					twitterObj.getLastWebResponse(replyMsg);
+					/* get cleaned string with all the ids */
+					replyMsg = ExtractString(replyMsg, "[", "]" );
+					/* iteration of all the */
+
+				}
+				else
+				{
+					replyMsg = "Erreur lors de l'exécution de 'followersIdsGet'";
+				}
+				MessageBox::Show(replyMsg.c_str());
+
+
+
+
 			}
 
 	std::string getUserUsername(string id)
@@ -101,10 +130,5 @@ public:
 
 				 return source.substr( startIndex, endIndex - startIndex );
 			}
- //    //   std::string getData() const
-	//{
- //       
- //       return replyMsg;
- //   }
     
 };
