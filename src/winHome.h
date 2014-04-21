@@ -127,15 +127,20 @@ namespace winHome {
 		System::Windows::Forms::Button*			btConfig;
 		System::Windows::Forms::Button*			btInfos;
 		System::Windows::Forms::Button*			btLogin;
+		System::Windows::Forms::Label*			lbWelcome;
+		/* New tweet */
+		System::Windows::Forms::Label*			lbNewTweet;
 		System::Windows::Forms::TextBox*		tbNewTweet;
 		System::Windows::Forms::Button*			btAddTweet;
-		System::Windows::Forms::Label*			lbWelcome;
-		System::Windows::Forms::Label*			lbNewTweet;
 		/* Load all ID followers */
 		System::Windows::Forms::TextBox*		tbAccountName;
 		System::Windows::Forms::Button*			btLoadListFollowers;
 		System::Windows::Forms::ListBox*		listToFollow;
 		System::Windows::Forms::Label*			lbWaitingList;
+		System::Windows::Forms::Button*			btFollowAll;
+		System::Windows::Forms::Button*			btAddToFollow;
+		System::Windows::Forms::Button*			btStopFollow;
+		
 
 
 #pragma region Windows Form Designer generated code
@@ -319,7 +324,54 @@ namespace winHome {
 				this->listToFollow->BorderStyle = System::Windows::Forms::BorderStyle::None;
 				this->listToFollow->ScrollAlwaysVisible = true;
 				//this->listToFollow->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
-				
+
+			// btFollowAll, start following all the list 
+				this->btFollowAll = new System::Windows::Forms::Button();
+				this->btFollowAll->BackColor = System::Drawing::Color::LightSkyBlue;	
+				this->btFollowAll->Image = System::Drawing::Image::FromFile("../img/mini_logo/play.png");
+				this->btFollowAll->Location = System::Drawing::Point(725, 445);
+				this->btFollowAll->Cursor = System::Windows::Forms::Cursors::Hand;
+				this->btFollowAll->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+				this->btFollowAll->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
+				this->btFollowAll->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
+				this->btFollowAll->FlatAppearance->BorderSize = 0;
+				this->btFollowAll->Name = L"btFollowAll";
+				this->btFollowAll->Size = System::Drawing::Size(20, 20);
+				this->btFollowAll->TabIndex = 3;
+				this->btFollowAll->UseVisualStyleBackColor = false;
+				this->btFollowAll->Click += new System::EventHandler(this, &windowHome::btFollowAll_Click);
+
+			// btStopFollow, to stop the thread used to mass following 
+				this->btStopFollow = new System::Windows::Forms::Button();
+				this->btStopFollow->BackColor = System::Drawing::Color::LightSkyBlue;	
+				this->btStopFollow->Image = System::Drawing::Image::FromFile("../img/mini_logo/stop.png");
+				this->btStopFollow->Location = System::Drawing::Point(695, 445);
+				this->btStopFollow->Cursor = System::Windows::Forms::Cursors::Hand;
+				this->btStopFollow->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+				this->btStopFollow->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
+				this->btStopFollow->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
+				this->btStopFollow->FlatAppearance->BorderSize = 0;
+				this->btStopFollow->Name = L"btFollowAll";
+				this->btStopFollow->Size = System::Drawing::Size(20, 20);
+				this->btStopFollow->TabIndex = 3;
+				this->btStopFollow->UseVisualStyleBackColor = false;
+				this->btStopFollow->Click += new System::EventHandler(this, &windowHome::btStopFollow_Click);
+
+			// btAddToFollow, used to add some account on the waiting list
+				this->btAddToFollow = new System::Windows::Forms::Button();
+				this->btAddToFollow->BackColor = System::Drawing::Color::LightSkyBlue;	
+				this->btAddToFollow->Image = System::Drawing::Image::FromFile("../img/mini_logo/add.png");
+				this->btAddToFollow->Location = System::Drawing::Point(665, 445);
+				this->btAddToFollow->Cursor = System::Windows::Forms::Cursors::Hand;
+				this->btAddToFollow->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+				this->btAddToFollow->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
+				this->btAddToFollow->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
+				this->btAddToFollow->FlatAppearance->BorderSize = 0;
+				this->btAddToFollow->Name = L"btAddToFollow";
+				this->btAddToFollow->Size = System::Drawing::Size(20, 20);
+				this->btAddToFollow->TabIndex = 3;
+				this->btAddToFollow->UseVisualStyleBackColor = false;
+				this->btAddToFollow->Click += new System::EventHandler(this, &windowHome::btAddToFollow_Click);
 
 			// adding the controls to the window
 				this->SuspendLayout();
@@ -329,6 +381,7 @@ namespace winHome {
 				this->Controls->Add(this->tbNewTweet);
 				this->Controls->Add(this->btConfig);
 				this->Controls->Add(this->btInfos);
+				this->Controls->Add(this->btFollowAll);
 				this->Controls->Add(this->lbWelcome);
 				this->Controls->Add(this->tbAccountName);
 				this->Controls->Add(this->btLoadListFollowers);
@@ -336,10 +389,26 @@ namespace winHome {
 				this->Controls->Add(this->listToFollow);
 				this->Controls->Add(this->btLogin);
 				this->Controls->Add(this->lbNewTweet);
+				this->Controls->Add(this->btAddToFollow);
+				this->Controls->Add(this->btStopFollow);
 				this->ResumeLayout(false);
 				this->PerformLayout();
 		}
 #pragma endregion
+	public: System::Void btFollowAll_Click(System::Object* sender, System::EventArgs* e)
+			{
+				// here, the code to start the mass following thread
+			}
+
+	public: System::Void btStopFollow_Click(System::Object* sender, System::EventArgs* e)
+			{
+				// here, the code to stop the mass following thread
+			}
+	public: System::Void btAddToFollow_Click(System::Object* sender, System::EventArgs* e)
+			{
+				// here, the code to call the window to add account to the waiting list
+			}
+		
 	public: System::Void btAddTweet_Click(System::Object* sender, System::EventArgs* e)
 			{
 				extern twitCurl twitterObj;
@@ -352,7 +421,9 @@ namespace winHome {
 					twitterObj.getLastWebResponse( replyMsg );
 					writeConsole(String::Concat("Tweet envoyé: <",ajout.c_str(),">"));
 					tbNewTweet->Text = "";
-				} else {
+				}
+				else
+				{
 					writeConsole(String::Concat("Erreur: <",ajout.c_str(),"> n'a pas été tweeté"));
 				}
 			}

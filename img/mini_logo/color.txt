@@ -1,0 +1,13 @@
+Remplacer le noir par : 
+-----------------------
+
+largeur, hauteur : 20
+
+images->reglages->correction sleective
+
+noir
+
+noir -90, tous les autres à 0
+
+
+PHOTOSHOP.
