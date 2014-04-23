@@ -14,6 +14,7 @@
 #include "winSettings.h"
 #include "winLog.h"
 #include "winPin.h"
+#include "winMassFollow.h"
 #include "twitterGet.h"
 
 #using <mscorlib.dll>
@@ -27,6 +28,7 @@ using namespace std;
 using namespace winSettings;
 using namespace winPin;
 using namespace winLog;
+using namespace winMassFollow;
 
 namespace winHome {
 
@@ -209,7 +211,7 @@ namespace winHome {
 				this->lbWaitingList->Location = System::Drawing::Point(630, 220);
 				this->lbWaitingList->Name = L"lbWaitingList";
 				this->lbWaitingList->Size = System::Drawing::Size(94, 27);
-				this->lbWaitingList->Text = L"Liste d'attente";
+				this->lbWaitingList->Text = L"Follow en masse";
 
 			// btLogin, to log in twitter using twitcurl
 				this->btLogin = new System::Windows::Forms::Button();
@@ -406,7 +408,8 @@ namespace winHome {
 			}
 	public: System::Void btAddToFollow_Click(System::Object* sender, System::EventArgs* e)
 			{
-				// here, the code to call the window to add account to the waiting list
+				windowMassFollow* wMassFollow = new windowMassFollow();
+				wMassFollow->ShowDialog();
 			}
 		
 	public: System::Void btAddTweet_Click(System::Object* sender, System::EventArgs* e)
