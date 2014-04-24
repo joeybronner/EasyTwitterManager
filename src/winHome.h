@@ -46,9 +46,12 @@ namespace winHome {
 	public __gc class windowHome : public System::Windows::Forms::Form
 	{
 
+		static windowHome* TheTest;
+
 	public: windowHome(void)
 		{		
 			InitializeComponent();
+			TheTest = this;
 			this->Show();
 			extern bool loggedIn;
 			windowLog* wLog = new windowLog();
@@ -346,7 +349,7 @@ namespace winHome {
 			// btStopFollow, to stop the thread used to mass following 
 				this->btStopFollow = new System::Windows::Forms::Button();
 				this->btStopFollow->BackColor = System::Drawing::Color::LightSkyBlue;	
-				this->btStopFollow->Image = System::Drawing::Image::FromFile("../img/mini_logo/stop.png");
+				this->btStopFollow->Image = System::Drawing::Image::FromFile("../img/mini_logo/pause.png");
 				this->btStopFollow->Location = System::Drawing::Point(695, 445);
 				this->btStopFollow->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->btStopFollow->FlatStyle = System::Windows::Forms::FlatStyle::Flat;

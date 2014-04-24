@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\include\twitcurl.h"
 #include "windows.h"
+#include "winHome.h"
 #include <vector>
 
 class twitterGet
@@ -9,6 +10,7 @@ class twitterGet
 private:    
     std::string replyMsg;
 	std::string nextCursor;
+	
     
 public:
 
