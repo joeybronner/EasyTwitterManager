@@ -77,28 +77,38 @@ namespace winHome {
 
 
 			// Test base de données
-			String* myConnString = S"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=\"C:\\Users\\Joey Bronner\\Google Drive\\C++_Workspace\\EasyTwitterManager\\database\\EasyTwitterManager.mdb\"";
+			/* Access */
+			//String* myConnString = S"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=\"C:\\Users\\Joey Bronner\\Google Drive\\C++_Workspace\\EasyTwitterManager\\database\\EasyTwitterManager.mdb\"";
+			/* SQL Compact */
+			String* myConnString = S"Provider=Microsoft.SQLSERVER.CE.OLEDB.3.5;Data Source=\"C:\\Users\\Joey Bronner\\Google Drive\\C++_Workspace\\EasyTwitterManager\\database\\ETMData.sdf\"";
+
+
 			System::Data::OleDb::OleDbConnection* myConnection = new System::Data::OleDb::OleDbConnection(myConnString);
 			
-			
-			String* mySELECT = S"SELECT * FROM user";
-			System::Data::OleDb::OleDbCommand* myCommand = new System::Data::OleDb::OleDbCommand(mySELECT,myConnection);
-			
-			//myConnection->Open();
-			myCommand->Connection->Open();
-			
-			writeConsole(String::Format( S"Statut de la connexion : {0}", __box(myConnection->State)));
-			writeConsole(String::Format( S"Version du serveur : {0}", myConnection->ServerVersion));
-			writeConsole(String::Format( S"Base de données : {0}", myConnection->Database));
-			writeConsole(String::Format( S"Source de données : {0}", myConnection->DataSource));
+
+
+
 			
 			try
 			{
-				myCommand->ExecuteNonQuery();
+				/* INSERT */
+				String* myInsertQuery = S"INSERT INTO user (ID, nom) Values(1, 'test')";
+				System::Data::OleDb::OleDbCommand* myInsert = new System::Data::OleDb::OleDbCommand(myInsertQuery);
+				myInsert->Connection = myConnection;
+				myConnection->Open();
+
+				writeConsole(String::Format( S"Statut de la connexion : {0}", __box(myConnection->State)));
+				writeConsole(String::Format( S"Version du serveur : {0}", myConnection->ServerVersion));
+				writeConsole(String::Format( S"Base de données : {0}", myConnection->Database));
+				writeConsole(String::Format( S"Source de données : {0}", myConnection->DataSource));
+
+				myInsert->ExecuteNonQuery();
+
 				writeConsole("Commande executée avec succès");
 			}
 			catch (Exception* ex)
 			{
+				//MessageBox::Show(ex->ToString());
 				writeConsole(ex->ToString());
 			}
 
