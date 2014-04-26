@@ -7,16 +7,17 @@
 #include <io.h>
 #include <fcntl.h>
 #include <iostream>
+#include <fstream>     
 #include <string>
 #include <ctime>
 #include <time.h>
-
 
 #using <mscorlib.dll>
 #using <System.dll>
 #using <System.Windows.Forms.dll>
 #using <System.Data.dll>
 #using <System.Drawing.dll>
+#using <mscorlib.dll>
 
 using namespace std;
 
@@ -32,11 +33,18 @@ namespace winMassFollow {
 
 	public __gc class windowMassFollow : public System::Windows::Forms::Form
 	{
+
 	public:
-		windowMassFollow(void)
+		windowMassFollow()
 		{
 			InitializeComponent();
+			//windowHome* wH = new windowHome();
+			//wH->ShowDialog();
+			//this->ParentForm->
+			//	Owner->Invoke(
+			//MessageBox::Show("Message");
 		}
+
 
 	protected:
 		~windowMassFollow()

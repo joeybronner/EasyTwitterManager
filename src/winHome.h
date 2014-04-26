@@ -46,6 +46,7 @@ namespace winHome {
 	public __gc class windowHome : public System::Windows::Forms::Form
 	{
 
+	public:
 		static windowHome* TheTest;
 
 	public: windowHome(void)
@@ -70,6 +71,39 @@ namespace winHome {
 			user = twitterObj.getTwitterUsername();
 			writeConsole(String::Concat("Connecté en tant que : @", user.c_str()));
 			this->lbWelcome->Text = String::Concat("Bonjour @",user.c_str(),"!");
+
+
+
+
+
+			// Test base de données
+			String* myConnString = S"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=\"C:\\Users\\Joey Bronner\\Google Drive\\C++_Workspace\\EasyTwitterManager\\database\\EasyTwitterManager.mdb\"";
+			System::Data::OleDb::OleDbConnection* myConnection = new System::Data::OleDb::OleDbConnection(myConnString);
+			
+			
+			String* mySELECT = S"SELECT * FROM user";
+			System::Data::OleDb::OleDbCommand* myCommand = new System::Data::OleDb::OleDbCommand(mySELECT,myConnection);
+			
+			//myConnection->Open();
+			myCommand->Connection->Open();
+			
+			writeConsole(String::Format( S"Statut de la connexion : {0}", __box(myConnection->State)));
+			writeConsole(String::Format( S"Version du serveur : {0}", myConnection->ServerVersion));
+			writeConsole(String::Format( S"Base de données : {0}", myConnection->Database));
+			writeConsole(String::Format( S"Source de données : {0}", myConnection->DataSource));
+			
+			try
+			{
+				myCommand->ExecuteNonQuery();
+				writeConsole("Commande executée avec succès");
+			}
+			catch (Exception* ex)
+			{
+				writeConsole(ex->ToString());
+			}
+
+			
+			myConnection->Close();
 
 			/* follow someone 
 			System::Data::SqlClient::SqlConnection* SqlConnection = new System::Data::SqlClient::SqlConnection();
@@ -145,7 +179,6 @@ namespace winHome {
 		System::Windows::Forms::Button*			btFollowAll;
 		System::Windows::Forms::Button*			btAddToFollow;
 		System::Windows::Forms::Button*			btStopFollow;
-		
 
 
 #pragma region Windows Form Designer generated code
