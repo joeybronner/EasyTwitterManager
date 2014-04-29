@@ -16,6 +16,7 @@
 #include "winPin.h"
 #include "winMassFollow.h"
 #include "twitterGet.h"
+#include "..\include\sqlite3.h" 
 
 #using <mscorlib.dll>
 #using <System.dll>
@@ -76,44 +77,77 @@ namespace winHome {
 
 
 
-			// Test base de données
-			/* Access */
+			//// Test base de données
+			///* Access */
 			//String* myConnString = S"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=\"C:\\Users\\Joey Bronner\\Google Drive\\C++_Workspace\\EasyTwitterManager\\database\\EasyTwitterManager.mdb\"";
-			/* SQL Compact */
-			String* myConnString = S"Provider=Microsoft.SQLSERVER.CE.OLEDB.3.5;Data Source=\"C:\\Users\\Joey Bronner\\Google Drive\\C++_Workspace\\EasyTwitterManager\\database\\ETMData.sdf\"";
+			///* SQL Compact */
+			//String* myConnString = S"Provider=Microsoft.SQLSERVER.CE.OLEDB.3.5;Data Source=\"C:\\Users\\Joey Bronner\\Google Drive\\C++_Workspace\\EasyTwitterManager\\database\\ETMData.sdf\"";
 
 
-			System::Data::OleDb::OleDbConnection* myConnection = new System::Data::OleDb::OleDbConnection(myConnString);
+			//System::Data::OleDb::OleDbConnection* myConnection = new System::Data::OleDb::OleDbConnection(myConnString);
+			//
+
+
+
+			//
+			//try
+			//{
+			//
+			//	/* INSERT */
+			//	String* myInsertQuery = S"INSERT INTO user (ID, nom) Values(1, 'test')";
+			//	System::Data::OleDb::OleDbCommand* myInsert = new System::Data::OleDb::OleDbCommand(myInsertQuery);
+			//	myInsert->Connection = myConnection;
+			//	myConnection->Open();
+
+			//	writeConsole(String::Format( S"Statut de la connexion : {0}", __box(myConnection->State)));
+			//	writeConsole(String::Format( S"Version du serveur : {0}", myConnection->ServerVersion));
+			//	writeConsole(String::Format( S"Base de données : {0}", myConnection->Database));
+			//	writeConsole(String::Format( S"Source de données : {0}", myConnection->DataSource));
+
+			//	myInsert->ExecuteNonQuery();
+
+			//	writeConsole("Commande executée avec succès");
+			//}
+			//catch (Exception* ex)
+			//{
+			//	//MessageBox::Show(ex->ToString());
+			//	writeConsole(ex->ToString());
+			//}
+
+			//
+			//myConnection->Close();
+
+			// SQLite database.
+			// http://www.tutorialspoint.com/sqlite/sqlite_c_cpp.htm
 			
+			sqlite3 *db;
+			sqlite3_stmt *statement;   
+			char *zErrMsg = 0;
+			char *sql;
+			const char* data = "Callback function called";
+			int rc;
 
-
-
-			
-			try
+			rc = sqlite3_open("..\database\test.sqlite", &db);
+			if( rc )
 			{
-				/* INSERT */
-				String* myInsertQuery = S"INSERT INTO user (ID, nom) Values(1, 'test')";
-				System::Data::OleDb::OleDbCommand* myInsert = new System::Data::OleDb::OleDbCommand(myInsertQuery);
-				myInsert->Connection = myConnection;
-				myConnection->Open();
-
-				writeConsole(String::Format( S"Statut de la connexion : {0}", __box(myConnection->State)));
-				writeConsole(String::Format( S"Version du serveur : {0}", myConnection->ServerVersion));
-				writeConsole(String::Format( S"Base de données : {0}", myConnection->Database));
-				writeConsole(String::Format( S"Source de données : {0}", myConnection->DataSource));
-
-				myInsert->ExecuteNonQuery();
-
-				writeConsole("Commande executée avec succès");
+				writeConsole("Connexion avec test.sqlite établie.");
+				
+				sql = "SELECT * from user";
+				if ( sqlite3_prepare(db, sql, -1, &statement, 0 ) == SQLITE_OK )
+				{
+					int ctotal = sqlite3_column_count(statement);
+					writeConsole("OHOHOHOHOHOHOHOH");
+				}
+				else
+				{
+					writeConsole("Problème de requete...");
+				}
 			}
-			catch (Exception* ex)
+			else
 			{
-				//MessageBox::Show(ex->ToString());
-				writeConsole(ex->ToString());
+				writeConsole("Erreur SQLite3 :(");
 			}
 
-			
-			myConnection->Close();
 
 			/* follow someone 
 			System::Data::SqlClient::SqlConnection* SqlConnection = new System::Data::SqlClient::SqlConnection();
@@ -452,10 +486,24 @@ namespace winHome {
 			{
 				// here, the code to stop the mass following thread
 			}
+
+
 	public: System::Void btAddToFollow_Click(System::Object* sender, System::EventArgs* e)
 			{
 				windowMassFollow* wMassFollow = new windowMassFollow();
 				wMassFollow->ShowDialog();
+			}
+
+	public: static int callback(void *data, int argc, char **argv, char **azColName)
+			{
+			   int i;
+			   fprintf(stderr, "%s: ", (const char*)data);
+			   for(i=0; i<argc; i++)
+			   {
+				  printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+			   }
+			   printf("\n");
+			   return 0;
 			}
 		
 	public: System::Void btAddTweet_Click(System::Object* sender, System::EventArgs* e)
@@ -498,7 +546,7 @@ namespace winHome {
 						string str;
 						str=token;
 						string userName = twiGet.getUserUsername(token);
-						this->listToFollow->Items->Add(String::Concat("",userName.c_str())); // il faut mettre un String*
+						this->listToFollow->Items->Add(String::Concat("",userName.c_str())); 
 					}
 				}
 			}
