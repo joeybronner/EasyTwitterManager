@@ -25,15 +25,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,PWSTR pCmdLine,
 	/* twitCurl initialization */
 	twitCurl twitterObj;
 
+	/* database initialization */
+	extern char* database;
+	database = "../database/ETMDB.sqlite";
 
 	/* running app */
 	Application::Run(wHome);
 
 	return 0;
-}
-
-void connection_database()
-{
-	
-
 }

@@ -9,7 +9,6 @@
 #include <string>
 #include <ctime>
 #include <time.h>
-//#include "twitcurl.h"
 
 using namespace std;
 
@@ -25,3 +24,4 @@ string replyMsg;
 char tmpBuf[1024];
 string user;
 string lang;
+char * database;

@@ -16,9 +16,8 @@
 #include "winPin.h"
 #include "winMassFollow.h"
 #include "twitterGet.h"
-#include "..\include\sqlite3.h" 
+#include "../include/sqlite3.h"
 
-#using <mscorlib.dll>
 #using <System.dll>
 #using <System.Windows.Forms.dll>
 #using <System.Data.dll>
@@ -73,53 +72,27 @@ namespace winHome {
 			writeConsole(String::Concat("Connecté en tant que : @", user.c_str()));
 			this->lbWelcome->Text = String::Concat("Bonjour @",user.c_str(),"!");
 
-
-
-
-			// SQLite database.
-			// http://www.tutorialspoint.com/sqlite/sqlite_c_cpp.htm
-			
+			/* database connection */
 			sqlite3* db;
+			extern char* database;
+			int co;
+			/*
 			sqlite3_stmt* statement;   
-			char* zErrMsg = 0;
-			
-			//char* sqlReq;
-			const char* data = "Callback function called";
+			char* zErrMsg;
+			const char* data;
 			int rc;
-
-			rc = sqlite3_open("../database/test.sqlite", &db);
-
-			if(rc){ writeConsole("Erreur de connexion à la base de données."); }
+			*/
+			
+			co = sqlite3_open(database, &db);
+			if(co)
+			{
+				writeConsole("Erreur de connexion à la base de données locale");
+			}
 			else
 			{
-				if (sqlite3_prepare_v2(db, "SELECT * from user", -1, &statement, 0)==SQLITE_OK)
-				{
-					int cols = sqlite3_column_count(statement);
-					int result = 0;
-					while(true)
-					{
-						result = sqlite3_step(statement);
-						
-						if(result == SQLITE_ROW)
-						{
-							int colonne = 1;
-							string s = (char*)sqlite3_column_text(statement, colonne);
-							writeConsole(s.c_str());
-						}
-						else
-						{
-							break;   
-						}
-					}
-				   
-					sqlite3_finalize(statement);
-				}
-				else
-				{
-					writeConsole("Problème de requete...");
-					writeConsole(sqlite3_errmsg(db));
-				}
+				writeConsole("Connexion à la base de données locale établie");
 			}
+
 		}
 
 	protected:
@@ -144,8 +117,6 @@ namespace winHome {
 		System::Windows::Forms::TextBox*		tbNewTweet;
 		System::Windows::Forms::Button*			btAddTweet;
 		/* Load all ID followers */
-		System::Windows::Forms::TextBox*		tbAccountName;
-		System::Windows::Forms::Button*			btLoadListFollowers;
 		System::Windows::Forms::ListBox*		listToFollow;
 		System::Windows::Forms::Label*			lbWaitingList;
 		System::Windows::Forms::Button*			btFollowAll;
@@ -184,22 +155,6 @@ namespace winHome {
 				this->btConfig->TabIndex = 3;
 				this->btConfig->UseVisualStyleBackColor = false;
 				this->btConfig->Click += new System::EventHandler(this, &windowHome::btConfig_Click);
-
-			// btLoadListFollowers, general app settings
-				this->btLoadListFollowers = new System::Windows::Forms::Button();
-				this->btLoadListFollowers->BackColor = System::Drawing::Color::LightSkyBlue;	
-				this->btLoadListFollowers->Location = System::Drawing::Point(105, 365);
-				this->btLoadListFollowers->Cursor = System::Windows::Forms::Cursors::Hand;
-				this->btLoadListFollowers->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-				this->btLoadListFollowers->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
-				this->btLoadListFollowers->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
-				this->btLoadListFollowers->FlatAppearance->BorderSize = 0;
-				this->btLoadListFollowers->Name = L"btLoadListFollowers";
-				this->btLoadListFollowers->Text = L"Charger";
-				this->btLoadListFollowers->Size = System::Drawing::Size(90, 25);
-				this->btLoadListFollowers->TabIndex = 3;
-				this->btLoadListFollowers->UseVisualStyleBackColor = false;
-				this->btLoadListFollowers->Click += new System::EventHandler(this, &windowHome::btLoadListFollowers_Click);
 
 			// welcome label message (label)
 				this->lbWelcome = new System::Windows::Forms::Label();
@@ -274,15 +229,6 @@ namespace winHome {
 				this->tbNewTweet->TextAlign = System::Windows::Forms::HorizontalAlignment::Left;
 				this->tbNewTweet->MaxLength = 140;
 				//this->tbNewTweet->TabIndex = 5;
-
-			// text box used to set up the pin auth
-				this->tbAccountName = new System::Windows::Forms::TextBox();
-				this->tbAccountName->BorderStyle = System::Windows::Forms::BorderStyle::None;
-				this->tbAccountName->Font = new System::Drawing::Font(L"Open Sans", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point);
-				this->tbAccountName->Location = System::Drawing::Point(100, 335);
-				this->tbAccountName->Name = L"tbAccountName";
-				this->tbAccountName->Size = System::Drawing::Size(100, 40);
-				this->tbAccountName->TextAlign = System::Windows::Forms::HorizontalAlignment::Left;
 
 			// button add tweet
 				this->btAddTweet = new System::Windows::Forms::Button();
@@ -393,8 +339,6 @@ namespace winHome {
 				this->Controls->Add(this->btInfos);
 				this->Controls->Add(this->btFollowAll);
 				this->Controls->Add(this->lbWelcome);
-				this->Controls->Add(this->tbAccountName);
-				this->Controls->Add(this->btLoadListFollowers);
 				this->Controls->Add(this->lbWaitingList);
 				this->Controls->Add(this->listToFollow);
 				this->Controls->Add(this->btLogin);
@@ -421,17 +365,6 @@ namespace winHome {
 				windowMassFollow* wMassFollow = new windowMassFollow();
 				wMassFollow->ShowDialog();
 			}
-
-	public: static int callback(void *data, int argc, char **argv, char **azColName)
-			{
-				int i;
-				//fprintf(stderr, "%s: ", (const char*)data);
-				for(i=0; i<argc; i++)
-				{
-					  printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-				}
-				return 0;
-			}
 		
 	public: System::Void btAddTweet_Click(System::Object* sender, System::EventArgs* e)
 			{
@@ -449,32 +382,6 @@ namespace winHome {
 				else
 				{
 					writeConsole(String::Concat("Erreur: <",ajout.c_str(),"> n'a pas été tweeté"));
-				}
-			}
-
-	public: System::Void btLoadListFollowers_Click(System::Object* sender, System::EventArgs* e)
-			{
-				String* tbValue = this->tbAccountName->Text;
-				string user;
-				MarshalString(tbValue,user);
-				/* get all followers id */
-				string folwrs = twiGet.getAllFollowers(user);
-				/* iteration */
-				char* chaineID;
-				char* token;
-				char* delim = ",";
-				chaineID = (char*)folwrs.c_str();
-				token = strtok(chaineID, delim);
-				while (token != NULL && token != "")
-				{
-					token = strtok(NULL, delim);
-					if (token!= NULL && token != "")
-					{
-						string str;
-						str=token;
-						string userName = twiGet.getUserUsername(token);
-						this->listToFollow->Items->Add(String::Concat("",userName.c_str())); 
-					}
 				}
 			}
 
