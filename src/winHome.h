@@ -76,122 +76,50 @@ namespace winHome {
 
 
 
-
-			//// Test base de données
-			///* Access */
-			//String* myConnString = S"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=\"C:\\Users\\Joey Bronner\\Google Drive\\C++_Workspace\\EasyTwitterManager\\database\\EasyTwitterManager.mdb\"";
-			///* SQL Compact */
-			//String* myConnString = S"Provider=Microsoft.SQLSERVER.CE.OLEDB.3.5;Data Source=\"C:\\Users\\Joey Bronner\\Google Drive\\C++_Workspace\\EasyTwitterManager\\database\\ETMData.sdf\"";
-
-
-			//System::Data::OleDb::OleDbConnection* myConnection = new System::Data::OleDb::OleDbConnection(myConnString);
-			//
-
-
-
-			//
-			//try
-			//{
-			//
-			//	/* INSERT */
-			//	String* myInsertQuery = S"INSERT INTO user (ID, nom) Values(1, 'test')";
-			//	System::Data::OleDb::OleDbCommand* myInsert = new System::Data::OleDb::OleDbCommand(myInsertQuery);
-			//	myInsert->Connection = myConnection;
-			//	myConnection->Open();
-
-			//	writeConsole(String::Format( S"Statut de la connexion : {0}", __box(myConnection->State)));
-			//	writeConsole(String::Format( S"Version du serveur : {0}", myConnection->ServerVersion));
-			//	writeConsole(String::Format( S"Base de données : {0}", myConnection->Database));
-			//	writeConsole(String::Format( S"Source de données : {0}", myConnection->DataSource));
-
-			//	myInsert->ExecuteNonQuery();
-
-			//	writeConsole("Commande executée avec succès");
-			//}
-			//catch (Exception* ex)
-			//{
-			//	//MessageBox::Show(ex->ToString());
-			//	writeConsole(ex->ToString());
-			//}
-
-			//
-			//myConnection->Close();
-
 			// SQLite database.
 			// http://www.tutorialspoint.com/sqlite/sqlite_c_cpp.htm
 			
-			sqlite3 *db;
-			sqlite3_stmt *statement;   
-			char *zErrMsg = 0;
-			char *sql;
+			sqlite3* db;
+			sqlite3_stmt* statement;   
+			char* zErrMsg = 0;
+			
+			//char* sqlReq;
 			const char* data = "Callback function called";
 			int rc;
 
-			rc = sqlite3_open("..\database\test.sqlite", &db);
-			if( rc )
+			rc = sqlite3_open("../database/test.sqlite", &db);
+
+			if(rc){ writeConsole("Erreur de connexion à la base de données."); }
+			else
 			{
-				writeConsole("Connexion avec test.sqlite établie.");
-				
-				sql = "SELECT * from user";
-				if ( sqlite3_prepare(db, sql, -1, &statement, 0 ) == SQLITE_OK )
+				if (sqlite3_prepare_v2(db, "SELECT * from user", -1, &statement, 0)==SQLITE_OK)
 				{
-					int ctotal = sqlite3_column_count(statement);
-					writeConsole("OHOHOHOHOHOHOHOH");
+					int cols = sqlite3_column_count(statement);
+					int result = 0;
+					while(true)
+					{
+						result = sqlite3_step(statement);
+						
+						if(result == SQLITE_ROW)
+						{
+							int colonne = 1;
+							string s = (char*)sqlite3_column_text(statement, colonne);
+							writeConsole(s.c_str());
+						}
+						else
+						{
+							break;   
+						}
+					}
+				   
+					sqlite3_finalize(statement);
 				}
 				else
 				{
 					writeConsole("Problème de requete...");
+					writeConsole(sqlite3_errmsg(db));
 				}
 			}
-			else
-			{
-				writeConsole("Erreur SQLite3 :(");
-			}
-
-
-			/* follow someone 
-			System::Data::SqlClient::SqlConnection* SqlConnection = new System::Data::SqlClient::SqlConnection();
-			SqlConnection->ConnectionString = "Data Source=..\database\MyDatabase#2.sdf; Initial Catalog=MyDatabase#2; Integrated Security=True";;
-			SqlConnection->Open();
-			*/
-
-			/*
-			String* myConnectString = S"Persist Security Info=False;Integrated Security=SSPI;database=northwind;server=mySQLServer";
-			SqlConnection* myConnection = new SqlConnection(myConnectString);
-			myConnection->Open();
-			MessageBox::Show(String::Format( S"ServerVersion: {0}\nDatasource: {1}", myConnection->ServerVersion, myConnection->DataSource ));
-			myConnection->Close();
-			*/
-
-
-			//System::Data::SqlClient::SqlConnection* dbConnect = new System::Data::SqlClient::SqlConnection();
-			//try
-			//{
-				/* database initialization */				
-				//dbConnect->ConnectionString = "Data Source=C:\Users\Joey Bronner\Google Drive\C++_Workspace\EasyTwitterManager\database\ETMdatabase.sdf;";
-				//dbConnect->ConnectionString = "Persist Security Info=False;Integrated Security=true;Initial Catalog=ETMdatabase;server=(local)";
-				//dbConnect->ConnectionString = "Server=localhost\\SQLEXPRESS;Database=ETMdatabase;";
-				 //dbConnect->ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\Joey Bronner\Google Drive\C++_Workspace\EasyTwitterManager\database\EasyTwitterManager.mdb;Persist Security Info=False";
-				//dbConnect->Open();
-				 //CString sDsn; 
-				 //CDatabase db; 
-				 //sDsn = "ODBC;DRIVER={MICROSOFT ACCESS DRIVER (*.mdb)};DSN='';DBQ=test2.db" ; 
-				 //db.Open(NULL,false,false,sDsn); 
-
-				//ADO::_ConnectionPtr conn;
-
-			//}
-			//catch (Exception* exerr)
-			//{
-				//MessageBox::Show(exerr);
-				//String* test = dbConnect->InfoMessage();
-			//	writeConsole("erreur");
-			//}
-
-			//string id		= twiGet.getUserID("joeybr");
-			//string suivi	= twiGet.followByID(id);
-			//writeConsole(suivi.c_str());
-			
 		}
 
 	protected:
@@ -496,14 +424,13 @@ namespace winHome {
 
 	public: static int callback(void *data, int argc, char **argv, char **azColName)
 			{
-			   int i;
-			   fprintf(stderr, "%s: ", (const char*)data);
-			   for(i=0; i<argc; i++)
-			   {
-				  printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-			   }
-			   printf("\n");
-			   return 0;
+				int i;
+				//fprintf(stderr, "%s: ", (const char*)data);
+				for(i=0; i<argc; i++)
+				{
+					  printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+				}
+				return 0;
 			}
 		
 	public: System::Void btAddTweet_Click(System::Object* sender, System::EventArgs* e)
