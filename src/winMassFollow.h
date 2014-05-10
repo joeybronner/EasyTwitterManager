@@ -133,6 +133,7 @@ namespace winMassFollow {
 
 	public: System::Void btLoadListFollowers_Click(System::Object* sender, System::EventArgs* e)
 			{
+				MessageBox::Show("Chargement des followers.");
 				//String* tbValue = this->tbAccountName->Text;
 				//string user;
 				//MarshalString(tbValue,user);

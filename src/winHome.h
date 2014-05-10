@@ -46,13 +46,9 @@ namespace winHome {
 	public __gc class windowHome : public System::Windows::Forms::Form
 	{
 
-	public:
-		static windowHome* TheTest;
-
 	public: windowHome(void)
 		{		
 			InitializeComponent();
-			TheTest = this;
 			this->Show();
 			extern bool loggedIn;
 			windowLog* wLog = new windowLog();
@@ -92,6 +88,9 @@ namespace winHome {
 			{
 				writeConsole("Connexion à la base de données locale établie");
 			}
+
+			//string test = twiGet.getUserID("joeybr");
+			//writeConsole(String::Concat("",test.c_str()));
 
 		}
 
@@ -139,6 +138,7 @@ namespace winHome {
 				IntPtr Hicon = imgIcon->GetHicon();
 				System::Drawing::Icon* iconETM = System::Drawing::Icon::FromHandle( Hicon );
 				this->Icon = iconETM;
+				this->Activated += new System::EventHandler(this, &windowHome::winHome_Activated);
 
 			// btConfig, general app settings
 				this->btConfig = new System::Windows::Forms::Button();
@@ -349,6 +349,11 @@ namespace winHome {
 				this->PerformLayout();
 		}
 #pragma endregion
+
+	public:	void winHome_Activated(System::Object* sender, System::EventArgs* e)
+			{
+				// here, the code to refresh the screen (when the window comes in 1st plan) 
+			}
 	public: System::Void btFollowAll_Click(System::Object* sender, System::EventArgs* e)
 			{
 				// here, the code to start the mass following thread
