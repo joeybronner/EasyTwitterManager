@@ -67,10 +67,6 @@ namespace winHome {
 			user = twitterObj.getTwitterUsername();
 			writeConsole(String::Concat("Connecté en tant que : @", user.c_str()));
 			this->lbWelcome->Text = String::Concat("Bonjour @",user.c_str(),"!");
-
-			//string test = twiGet.getUserID("joeybr");
-			//writeConsole(String::Concat("",test.c_str()));
-
 		}
 
 	protected:
@@ -89,6 +85,7 @@ namespace winHome {
 		System::Windows::Forms::Button*			btConfig;
 		System::Windows::Forms::Button*			btInfos;
 		System::Windows::Forms::Button*			btLogin;
+		System::Windows::Forms::Button*			btRefresh;
 		System::Windows::Forms::Label*			lbWelcome;
 		/* New tweet */
 		System::Windows::Forms::Label*			lbNewTweet;
@@ -117,7 +114,6 @@ namespace winHome {
 				IntPtr Hicon = imgIcon->GetHicon();
 				System::Drawing::Icon* iconETM = System::Drawing::Icon::FromHandle( Hicon );
 				this->Icon = iconETM;
-				this->Activated += new System::EventHandler(this, &windowHome::winHome_Activated);
 
 			// btConfig, general app settings
 				this->btConfig = new System::Windows::Forms::Button();
@@ -170,6 +166,24 @@ namespace winHome {
 				this->btLogin->TabIndex = 3;
 				this->btLogin->UseVisualStyleBackColor = false;
 				this->btLogin->Click += new System::EventHandler(this, &windowHome::btLogin_Click);
+
+
+			// btRefresh, to refresh the screen
+				this->btRefresh = new System::Windows::Forms::Button();
+				this->btRefresh->BackColor = System::Drawing::Color::LightSkyBlue;	
+				this->btRefresh->Image = System::Drawing::Image::FromFile("../img/ic_refresh.png");
+				this->btRefresh->Location = System::Drawing::Point(5, 265);
+				this->btRefresh->Cursor = System::Windows::Forms::Cursors::Hand;
+				this->btRefresh->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+				this->btRefresh->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
+				this->btRefresh->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
+				this->btRefresh->FlatAppearance->BorderSize = 0;
+				this->btRefresh->Name = L"btRefresh";
+				this->btRefresh->Size = System::Drawing::Size(90, 90);
+				this->btRefresh->TabIndex = 3;
+				this->btRefresh->UseVisualStyleBackColor = false;
+				this->btRefresh->Click += new System::EventHandler(this, &windowHome::btRefresh_Click);
+
 
 			// btInfos, why this app has been devlopped ? who ? etc.. 
 				this->btInfos = new System::Windows::Forms::Button();
@@ -324,13 +338,14 @@ namespace winHome {
 				this->Controls->Add(this->lbNewTweet);
 				this->Controls->Add(this->btAddToFollow);
 				this->Controls->Add(this->btStopFollow);
+				this->Controls->Add(this->btRefresh);
 				this->ResumeLayout(false);
 				this->PerformLayout();
 		}
 #pragma endregion
 
-	public:	void winHome_Activated(System::Object* sender, System::EventArgs* e)
-			{
+	private: void refresh_ListFollow()
+			 {
 				extern bool loggedIn;
 				if (loggedIn)
 				{
@@ -352,6 +367,7 @@ namespace winHome {
 							listToFollow->Items->Clear();
 							int cols = sqlite3_column_count(statement);
 							int result = 0;
+							int compt = 0;
 							while(true)
 							{
 								result = sqlite3_step(statement);
@@ -360,16 +376,16 @@ namespace winHome {
 								{
 									int colonne = 2;
 									string s = (char*)sqlite3_column_text(statement, colonne);
-									String* hey = new String(s.c_str());
-									listToFollow->Items->Add(hey);
-									//writeConsole(s.c_str());
+									String* ch = new String(s.c_str());
+									listToFollow->Items->Add(ch);
+									compt++;
 								}
 								else
 								{
 									break;   
 								}
 							}
-						
+							writeConsole(String::Concat(Convert::ToString(compt)," comptes en attente de follow"));
 							sqlite3_finalize(statement);
 							sqlite3_close(db);
 						}
@@ -379,8 +395,7 @@ namespace winHome {
 						}
 					}
 				}
-					
-			}
+			 }
 	public: System::Void btFollowAll_Click(System::Object* sender, System::EventArgs* e)
 			{
 				// here, the code to start the mass following thread
@@ -397,6 +412,15 @@ namespace winHome {
 				windowMassFollow* wMassFollow = new windowMassFollow();
 				wMassFollow->ShowDialog();
 			}
+
+	public: System::Void btRefresh_Click(System::Object* sender, System::EventArgs* e)
+			{
+				/* 1st refresh */
+				refresh_ListFollow();
+
+				writeConsole("Mise à jour effectuée avec succès");
+			}
+			
 		
 	public: System::Void btAddTweet_Click(System::Object* sender, System::EventArgs* e)
 			{

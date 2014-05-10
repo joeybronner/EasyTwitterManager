@@ -168,47 +168,52 @@ namespace winMassFollow {
 			//// http://www.codeproject.com/Tips/378808/Accessing-a-SQLite-Database-with-Cplusplus
 			//	
 			//	
-			///* variables */
-			//sqlite3* db;
-			//sqlite3_stmt* statement;   
-			//char* zErrMsg;
-			//const char* data;
-			//int rc;
-
-			///* database connection */
-			//rc = sqlite3_open(DB, &db);
-
-
-			//if(rc){ MessageBox::Show("Erreur de connexion à la base de données."); }
-			//else
-			//{
-			//	if (sqlite3_prepare_v2(db, "SELECT * from user", -1, &statement, 0)==SQLITE_OK)
-			//	{
-			//		int cols = sqlite3_column_count(statement);
-			//		int result = 0;
-			//		while(true)
-			//		{
-			//			result = sqlite3_step(statement);
-			//			
-			//			if(result == SQLITE_ROW)
-			//			{
-			//				int colonne = 1;
-			//				string s = (char*)sqlite3_column_text(statement, colonne);
-			//				MessageBox::Show(s.c_str());
-			//			}
-			//			else
-			//			{
-			//				break;   
-			//			}
-			//		}
-			//	
-			//		sqlite3_finalize(statement);
-			//		sqlite3_close(db)
-			//	}
-			//	else
-			//	{
-			//		//writeConsole("Problème de requete...");
-			//		//writeConsole(sqlite3_errmsg(db));
-			//		MessageBox::Show(sqlite3_errmsg(db));
-			//	}
-			//}
+				//extern bool loggedIn;
+				//if (loggedIn)
+				//{
+				//	/* database connection */
+				//	sqlite3* db;
+				//	extern char* database;
+				//	int co;	
+				//	sqlite3_stmt* statement;
+				//	
+				//	co = sqlite3_open(database, &db);
+				//	if(co)
+				//	{
+				//		writeConsole("Erreur de connexion à la base de données locale");
+				//	}
+				//	else
+				//	{
+				//		if (sqlite3_prepare_v2(db, "SELECT * FROM TOFOLLOW", -1, &statement, 0) == SQLITE_OK)
+				//		{
+				//			listToFollow->Items->Clear();
+				//			int cols = sqlite3_column_count(statement);
+				//			int result = 0;
+				//			int compt = 0;
+				//			while(true)
+				//			{
+				//				result = sqlite3_step(statement);
+				//				
+				//				if(result == SQLITE_ROW)
+				//				{
+				//					int colonne = 2;
+				//					string s = (char*)sqlite3_column_text(statement, colonne);
+				//					String* ch = new String(s.c_str());
+				//					listToFollow->Items->Add(ch);
+				//					compt++;
+				//				}
+				//				else
+				//				{
+				//					break;   
+				//				}
+				//			}
+				//			writeConsole(String::Concat(Convert::ToString(compt)," comptes en attente de follow"));
+				//			sqlite3_finalize(statement);
+				//			sqlite3_close(db);
+				//		}
+				//		else
+				//		{
+				//			// error gesture
+				//		}
+				//	}
+				//}
