@@ -10,6 +10,7 @@
 #include <fstream>     
 #include <string>
 #include <ctime>
+#include <wininet.h>
 #include <time.h>
 #include "winSettings.h"
 #include "winPin.h"
@@ -128,144 +129,155 @@ namespace winLog {
 				this->PerformLayout();
 		}
 #pragma endregion
-	public: System::Void btExit_Click(System::Object* sender, System::EventArgs* e)
+	
+	private: System::Void btExit_Click(System::Object* sender, System::EventArgs* e)
 			{
 				exit(1);
 			}
-	public: System::Void btLogin_Click(System::Object* sender, System::EventArgs* e)
+	
+	private: System::Void btLogin_Click(System::Object* sender, System::EventArgs* e)
 			{
-				try {
-					/* ìnit message on console */
-					//writeConsole("Début de l'initialisation de l'API Twitter.");
 
-					/* twitCurl initializing */
-					extern twitCurl twitterObj;
-					extern string tmpStr, tmpStr2;
-					extern string replyMsg;
-					extern char tmpBuf[1024];
+				if (system("ping www.google.com"))
+				{
+					MessageBox::Show("Erreur. Le programme nécessite une connexion à internet.");
+				}
+				else
+				{
 
-					/* OAuth flow begins */
-					twitterObj.getOAuth().setConsumerKey(	 std::string( "vlC5S1NCMHHg8mD1ghPRkA" ) );
-					twitterObj.getOAuth().setConsumerSecret( std::string( "3w4cIrHyI3IYUZW5O2ppcFXmsACDaENzFdLIKmEU84" ) );
+					try {
 
-					/* check if we alredy have OAuth access token from a previous run */
+						/* twitCurl initializing */
+						extern twitCurl twitterObj;
+						extern string tmpStr, tmpStr2;
+						extern string replyMsg;
+						extern char tmpBuf[1024];
 
-					std::ifstream oAuthTokenKeyIn("../txt/twitterClient_token_key.txt");
-					std::ifstream oAuthTokenSecretIn("../txt/twitterClient_token_secret.txt");
+						/* OAuth flow begins */
+						twitterObj.getOAuth().setConsumerKey(	 std::string( "vlC5S1NCMHHg8mD1ghPRkA" ) );
+						twitterObj.getOAuth().setConsumerSecret( std::string( "3w4cIrHyI3IYUZW5O2ppcFXmsACDaENzFdLIKmEU84" ) );
 
-					string myOAuthAccessTokenKey("");
-					string myOAuthAccessTokenSecret("");
+						/* check if we alredy have OAuth access token from a previous run */
 
-					if (oAuthTokenKeyIn && oAuthTokenSecretIn)
-					{
-						//writeConsole("Récupération des clés d'authentification d'une ancienne connexion.");
+						std::ifstream oAuthTokenKeyIn("../txt/twitterClient_token_key.txt");
+						std::ifstream oAuthTokenSecretIn("../txt/twitterClient_token_secret.txt");
 
-						// get the key from file
-						String* key = System::IO::File::ReadAllText("../txt/twitterClient_token_key.txt");
-						MarshalString(key,myOAuthAccessTokenKey);
+						string myOAuthAccessTokenKey("");
+						string myOAuthAccessTokenSecret("");
 
-						// get the secret from file
-						String* secret = System::IO::File::ReadAllText("../txt/twitterClient_token_secret.txt");
-						MarshalString(secret,myOAuthAccessTokenSecret);
-
-						if( myOAuthAccessTokenKey.size() && myOAuthAccessTokenSecret.size() )
+						if (oAuthTokenKeyIn && oAuthTokenSecretIn)
 						{
-							/* If we already have these keys, then no need to go through auth again */
-							//writeConsole("Clés récupérées avec succès.");
-							//writeConsole(String::Concat("Key   : ", myOAuthAccessTokenKey.c_str()));
-							//writeConsole(String::Concat("Secret: ", myOAuthAccessTokenSecret.c_str()));
+
+							// get the key from file
+							String* key = System::IO::File::ReadAllText("../txt/twitterClient_token_key.txt");
+							MarshalString(key,myOAuthAccessTokenKey);
+
+							// get the secret from file
+							String* secret = System::IO::File::ReadAllText("../txt/twitterClient_token_secret.txt");
+							MarshalString(secret,myOAuthAccessTokenSecret);
+
+							if( myOAuthAccessTokenKey.size() && myOAuthAccessTokenSecret.size() )
+							{
+								/* If we already have these keys, then no need to go through auth again */
+								//writeConsole("Clés récupérées avec succès.");
+								//writeConsole(String::Concat("Key   : ", myOAuthAccessTokenKey.c_str()));
+								//writeConsole(String::Concat("Secret: ", myOAuthAccessTokenSecret.c_str()));
+								
+								/* authentification */
+								twitterObj.getOAuth().setOAuthTokenKey( myOAuthAccessTokenKey );
+								twitterObj.getOAuth().setOAuthTokenSecret( myOAuthAccessTokenSecret );
+							}
 							
-							/* authentification */
-							twitterObj.getOAuth().setOAuthTokenKey( myOAuthAccessTokenKey );
-							twitterObj.getOAuth().setOAuthTokenSecret( myOAuthAccessTokenSecret );
-						}
-						
-					}
-					else {
-						//writeConsole("Aucune ancienne connexion détectée.");
-						
-						/* get request token key and secret */
-						std::string authUrl;
-						twitterObj.oAuthRequestToken( authUrl );
-
-						if (MessageBox::Show(String::Concat("Vous devez être redirigé vers ",authUrl.c_str()," pour autoriser l'application."),"Authentification EasyTwitterManager", MessageBoxButtons::YesNo,MessageBoxIcon::Question)==::DialogResult::Yes)
-						{
-							//writeConsole(String::Concat("Ouverture de la page web : ",authUrl.c_str()));
-							System::Diagnostics::Process::Start(authUrl.c_str());
-
-							// to get the pin value
-							windowPin* wPin = new windowPin();
-							wPin->ShowDialog();
-
-							//writeConsole(String::Concat("PIN entré : ",tmpStr.c_str()));
-
-							// auth with the key entered by the user
-							twitterObj.getOAuth().setOAuthPin( tmpStr );
-							twitterObj.oAuthAccessToken();
-
-							/* authentification */
-							twitterObj.getOAuth().getOAuthTokenKey( myOAuthAccessTokenKey );
-							twitterObj.getOAuth().getOAuthTokenSecret( myOAuthAccessTokenSecret );
-
-							/* Saving these keys in a text file */
-							std::ofstream oAuthTokenKeyOut;
-							std::ofstream oAuthTokenSecretOut;
-
-							oAuthTokenKeyOut.open( "../txt/twitterClient_token_key.txt" );
-							oAuthTokenSecretOut.open( "../txt/twitterClient_token_secret.txt" );
-
-							// deleting data who are already in this file
-							oAuthTokenKeyOut.clear();
-							oAuthTokenSecretOut.clear();
-
-							// adding the new keys
-							oAuthTokenKeyOut << myOAuthAccessTokenKey.c_str();
-							oAuthTokenSecretOut << myOAuthAccessTokenSecret.c_str();
-
-							// closing files
-							oAuthTokenKeyOut.close();
-							oAuthTokenSecretOut.close();
 						}
 						else {
-							//writeConsole("L'initialisation requiert une redirection vers internet.");
-							return;
+							//writeConsole("Aucune ancienne connexion détectée.");
+							
+							/* get request token key and secret */
+							std::string authUrl;
+							twitterObj.oAuthRequestToken( authUrl );
+
+							if (MessageBox::Show(String::Concat("Vous devez être redirigé vers ",authUrl.c_str()," pour autoriser l'application."),"Authentification EasyTwitterManager", MessageBoxButtons::YesNo,MessageBoxIcon::Question)==::DialogResult::Yes)
+							{
+								//writeConsole(String::Concat("Ouverture de la page web : ",authUrl.c_str()));
+								System::Diagnostics::Process::Start(authUrl.c_str());
+
+								// to get the pin value
+								windowPin* wPin = new windowPin();
+								wPin->ShowDialog();
+
+								//writeConsole(String::Concat("PIN entré : ",tmpStr.c_str()));
+
+								// auth with the key entered by the user
+								twitterObj.getOAuth().setOAuthPin( tmpStr );
+								twitterObj.oAuthAccessToken();
+
+								/* authentification */
+								twitterObj.getOAuth().getOAuthTokenKey( myOAuthAccessTokenKey );
+								twitterObj.getOAuth().getOAuthTokenSecret( myOAuthAccessTokenSecret );
+
+								/* Saving these keys in a text file */
+								std::ofstream oAuthTokenKeyOut;
+								std::ofstream oAuthTokenSecretOut;
+
+								oAuthTokenKeyOut.open( "../txt/twitterClient_token_key.txt" );
+								oAuthTokenSecretOut.open( "../txt/twitterClient_token_secret.txt" );
+
+								// deleting data who are already in this file
+								oAuthTokenKeyOut.clear();
+								oAuthTokenSecretOut.clear();
+
+								// adding the new keys
+								oAuthTokenKeyOut << myOAuthAccessTokenKey.c_str();
+								oAuthTokenSecretOut << myOAuthAccessTokenSecret.c_str();
+
+								// closing files
+								oAuthTokenKeyOut.close();
+								oAuthTokenSecretOut.close();
+							}
+							else {
+								//writeConsole("L'initialisation requiert une redirection vers internet.");
+								return;
+							}
+
 						}
 
+						// check if connection if ok
+
+						if( twitterObj.accountVerifyCredGet() )
+						{
+							//twitterObj.getLastWebResponse( replyMsg );
+							
+							//replyMsg = twitterObj.timelineUserGet(true,false,1,"", false);
+							//writeConsole("Vous êtes connecté!");
+							//activeDesactiveElements(true, "logout");
+						}
+						else
+						{
+							twitterObj.getLastCurlError( replyMsg );
+							//writeConsole(replyMsg.c_str());
+						}
+
+						/*
+							CONNECTION ESTABLISHED !!! 
+							ìnit message on console
+						*/
+						//writeConsole("Fin de l'initialisation de l'API Twitter.");
+						extern bool loggedIn;
+						loggedIn = true;
+						this->Close();
+
 					}
-
-					// check if connection if ok
-
-					if( twitterObj.accountVerifyCredGet() )
-					{
-						//twitterObj.getLastWebResponse( replyMsg );
-						
-						//replyMsg = twitterObj.timelineUserGet(true,false,1,"", false);
-						//writeConsole("Vous êtes connecté!");
-						//activeDesactiveElements(true, "logout");
+					catch (int e) {
+						/* error message */
+						//writeConsole("Erreur lors de l'initialisation de l'API Twitter.");
+						//writeConsole(e.ToString());
+						MessageBox::Show("Erreur.");
 					}
-					else
-					{
-						twitterObj.getLastCurlError( replyMsg );
-						//writeConsole(replyMsg.c_str());
-					}
-
-					/*
-						CONNECTION ESTABLISHED !!! 
-						ìnit message on console
-					*/
-					//writeConsole("Fin de l'initialisation de l'API Twitter.");
-					extern bool loggedIn;
-					loggedIn = true;
-					this->Close();
-
-				}
-				catch (int e) {
-					/* error message */
-					//writeConsole("Erreur lors de l'initialisation de l'API Twitter.");
-					//writeConsole(e.ToString());
+					
 				}
 				
 			}
+	
 	void MarshalString ( String* s, string& os )
 			{
 			   using namespace Runtime::InteropServices;

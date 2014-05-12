@@ -15,7 +15,6 @@
 #include "winLog.h"
 #include "winPin.h"
 #include "winMassFollow.h"
-#include "twitterGet.h"
 #include "../include/sqlite3.h"
 
 #using <System.dll>
@@ -39,9 +38,6 @@ namespace winHome {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
-
-	/* ------- Variables ------- */
-	twitterGet twiGet;			// all methods to get informations
 	
 	public __gc class windowHome : public System::Windows::Forms::Form
 	{
@@ -261,6 +257,7 @@ namespace winHome {
 				this->consoleFooter->TabIndex = 2;
 				this->consoleFooter->BorderStyle = System::Windows::Forms::BorderStyle::None;
 				this->consoleFooter->ScrollAlwaysVisible = true;
+				
 
 			// listBox who conain all the list to follow
 				this->listToFollow = new System::Windows::Forms::ListBox();
@@ -273,6 +270,7 @@ namespace winHome {
 				this->listToFollow->BorderStyle = System::Windows::Forms::BorderStyle::None;
 				this->listToFollow->ScrollAlwaysVisible = true;
 				//this->listToFollow->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
+				this->listToFollow->SelectionMode = System::Windows::Forms::SelectionMode::MultiExtended;
 
 			// btFollowAll, start following all the list 
 				this->btFollowAll = new System::Windows::Forms::Button();
@@ -396,33 +394,42 @@ namespace winHome {
 					}
 				}
 			 }
-	public: System::Void btFollowAll_Click(System::Object* sender, System::EventArgs* e)
+	
+	private: System::Void btFollowAll_Click(System::Object* sender, System::EventArgs* e)
 			{
 				// here, the code to start the mass following thread
 			}
 
-	public: System::Void btStopFollow_Click(System::Object* sender, System::EventArgs* e)
+	
+	private: System::Void btStopFollow_Click(System::Object* sender, System::EventArgs* e)
 			{
 				// here, the code to stop the mass following thread
 			}
 
 
-	public: System::Void btAddToFollow_Click(System::Object* sender, System::EventArgs* e)
+	
+	private: System::Void btAddToFollow_Click(System::Object* sender, System::EventArgs* e)
 			{
 				windowMassFollow* wMassFollow = new windowMassFollow();
 				wMassFollow->ShowDialog();
 			}
 
-	public: System::Void btRefresh_Click(System::Object* sender, System::EventArgs* e)
+	
+	private: System::Void btRefresh_Click(System::Object* sender, System::EventArgs* e)
 			{
-				/* 1st refresh */
+				/* all the refresh methods are called here */
+
+				/* 1st refresh : list to follow (database table: TOFOLLOW) */
 				refresh_ListFollow();
 
+				/* 2nd refresh : ... (database table: TABLENAME) */
+				// code...
+
+				/* end message */
 				writeConsole("Mise à jour effectuée avec succès");
 			}
-			
-		
-	public: System::Void btAddTweet_Click(System::Object* sender, System::EventArgs* e)
+				
+	private: System::Void btAddTweet_Click(System::Object* sender, System::EventArgs* e)
 			{
 				extern twitCurl twitterObj;
 				String* test = this->tbNewTweet->Text;
@@ -441,12 +448,14 @@ namespace winHome {
 				}
 			}
 
-	public: System::Void btConfig_Click(System::Object* sender, System::EventArgs* e)
+	
+	private: System::Void btConfig_Click(System::Object* sender, System::EventArgs* e)
 			{
 				windowSettings* wSettings = new windowSettings();
 				wSettings->ShowDialog();
 			}
 
+	
 	public: System::String* getDateTime()
 			{
 				/* initializing with the current hour and date */
@@ -482,12 +491,15 @@ namespace winHome {
 				retour = String::Concat(retour,Sseco," - ");
 				return retour;
 			}
-	public: System::Void btLogin_Click(System::Object* sender, System::EventArgs* e)
+
+	
+	private: System::Void btLogin_Click(System::Object* sender, System::EventArgs* e)
 			{
 				windowLog* wLog = new windowLog();
 				wLog->ShowDialog();
 			}
 
+	
 	public: void writeConsole(String* msg)
 			{
 				String* currentDate = getDateTime();
@@ -495,7 +507,8 @@ namespace winHome {
 				this->consoleFooter->Items->Add(initMsg);
 			}
 
-	void MarshalString ( String* s, string& os )
+	
+	private: void MarshalString ( String* s, string& os )
 			{
 			   using namespace Runtime::InteropServices;
 			   const char* chars = (const char*)(Marshal::StringToHGlobalAnsi(s)).ToPointer();
@@ -552,11 +565,16 @@ namespace winHome {
 				istringstream (replyMsg) >> count;
 				return count;
 			}
-/* 
+
+
+
+
+/* Others methods (commented)
 -------------------
       RESERVE 
 -------------------
 
+1. READING FILES
 	public: System::Void btAddAccount_Click(System::Object* sender, System::EventArgs* e)
 			{
 				// get the tb value
@@ -604,6 +622,10 @@ namespace winHome {
 
 
 */
+
+	/*
+
+	*/
 
 	};
 }

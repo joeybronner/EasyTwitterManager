@@ -1,7 +1,11 @@
+#ifndef TWITTERGET_H
+#define TWITTERGET_H
+
 #include "stdafx.h"
 #include "..\include\twitcurl.h"
 #include "windows.h"
 #include "winHome.h"
+#include "winMassFollow.h"
 #include <vector>
 
 class twitterGet
@@ -109,8 +113,8 @@ public:
 
 
 
+	
 	/* others */
-
 	string ExtractString( std::string source, std::string start, std::string end )
 			{
 				std::string::size_type startIndex = source.find( start );
@@ -129,3 +133,5 @@ public:
 			}
     
 };
+
+#endif

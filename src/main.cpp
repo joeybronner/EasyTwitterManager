@@ -9,12 +9,14 @@
 #include <io.h>
 #include <fcntl.h>
 #include "winHome.h"
+#include "winMassFollow.h"
 #include <iostream>
 #include <fstream>
 
 #define APIENTRY WINAPI
 
 using namespace winHome;
+using namespace winMassFollow;
 using namespace std;
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,PWSTR pCmdLine, int nCmdShow)

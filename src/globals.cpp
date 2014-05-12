@@ -25,3 +25,4 @@ char tmpBuf[1024];
 string user;
 string lang;
 char * database;
+

@@ -70,6 +70,11 @@ public:
     bool userGet( std::string& userInfo /* in */, bool isUserId = false /* in */ );
     bool friendsGet( std::string userInfo = "" /* in */, bool isUserId = false /* in */ );
     bool followersGet( std::string userInfo = "" /* in */, bool isUserId = false /* in */ );
+	
+	// CONTINUE DIAGRAM HERE!!! 2014-05-12
+	
+	
+	
 
     /* Twitter direct message APIs */
     bool directMessageGet( std::string sinceId = "" /* in */ );

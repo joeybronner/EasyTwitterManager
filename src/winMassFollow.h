@@ -11,7 +11,8 @@
 #include <string>
 #include <ctime>
 #include <time.h>
-#include "..\include\sqlite3.h" 
+#include "..\include\sqlite3.h"
+#include "twitterGet.h"
 
 #using <System.dll>
 #using <System.Windows.Forms.dll>
@@ -32,7 +33,7 @@ namespace winMassFollow {
 	using namespace System::Drawing;
 
 	public __gc class windowMassFollow : public System::Windows::Forms::Form
-	{
+	{ 
 
 	public:
 		windowMassFollow()
@@ -133,30 +134,97 @@ namespace winMassFollow {
 
 	public: System::Void btLoadListFollowers_Click(System::Object* sender, System::EventArgs* e)
 			{
-				MessageBox::Show("Chargement des followers.");
-				//String* tbValue = this->tbAccountName->Text;
-				//string user;
-				//MarshalString(tbValue,user);
-				///* get all followers id */
-				//string folwrs = twiGet.getAllFollowers(user);
-				///* iteration */
-				//char* chaineID;
-				//char* token;
-				//char* delim = ",";
-				//chaineID = (char*)folwrs.c_str();
-				//token = strtok(chaineID, delim);
-				//while (token != NULL && token != "")
-				//{
-				//	token = strtok(NULL, delim);
-				//	if (token!= NULL && token != "")
-				//	{
-				//		string str;
-				//		str=token;
-				//		string userName = twiGet.getUserUsername(token);
-				//		this->listToFollow->Items->Add(String::Concat("",userName.c_str())); 
-				//	}
-				//}
+
+				// get the tb value
+				String* tbValue = this->tbAccountName->Text;
+
+				if (tbValue->Length < 1)
+				{
+					MessageBox::Show("Veuillez compléter le champ correspondant");
+				}
+				else
+				{
+					/* database connection */
+					sqlite3* db;
+					extern char* database;
+					int co;	
+					sqlite3_stmt* statement;
+						
+					co = sqlite3_open(database, &db);
+					if(co)
+					{
+						MessageBox::Show("Erreur de connexion à la base de données locale");
+					}
+					else
+					{
+						// get all the followers
+						twitterGet twiGet;
+						string tbval;
+						MarshalString(tbValue,tbval);
+						string test;
+						test = twiGet.getAllFollowers(tbval);
+						MessageBox::Show(test.c_str());
+						
+						// spliting string
+						string delimiter = ",";
+						size_t pos = 0;
+						string token;
+						while ((pos = test.find(delimiter)) != std::string::npos)
+						{
+							token = test.substr(0, pos);
+							MessageBox::Show(token.c_str());
+							test.erase(0, pos + delimiter.length());
+						}
+						
+
+
+						MessageBox::Show("Connexion à la base OK");
+						//	if (sqlite3_prepare_v2(db, "SELECT * FROM TOFOLLOW", -1, &statement, 0) == SQLITE_OK)
+						//		{
+						//			listToFollow->Items->Clear();
+						//			int cols = sqlite3_column_count(statement);
+						//			int result = 0;
+						//			int compt = 0;
+						//			while(true)
+						//			{
+						//				result = sqlite3_step(statement);
+						//				
+						//				if(result == SQLITE_ROW)
+						//				{
+						//					int colonne = 2;
+						//					string s = (char*)sqlite3_column_text(statement, colonne);
+						//					String* ch = new String(s.c_str());
+						//					listToFollow->Items->Add(ch);
+						//					compt++;
+						//				}
+						//				else
+						//				{
+						//					break;   
+						//				}
+						//			}
+						//			writeConsole(String::Concat(Convert::ToString(compt)," comptes en attente de follow"));
+						//			sqlite3_finalize(statement);
+						//			sqlite3_close(db);
+						//		}
+						//		else
+						//		{
+						//			// error gesture
+						//		}
+						}
+						this->tbAccountName->Text = "";
+					}
+				
 			}
+
+	void MarshalString ( String* s, string& os )
+			{
+			   using namespace Runtime::InteropServices;
+			   const char* chars = (const char*)(Marshal::StringToHGlobalAnsi(s)).ToPointer();
+			   os = chars;
+			   Marshal::FreeHGlobal(IntPtr((void*)chars));
+			}
+
+
 	};
 }
 
