@@ -4,6 +4,7 @@
 #include "windows.h"
 #include "tchar.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <io.h>
 #include <fcntl.h>
 #include <iostream>
@@ -149,6 +150,7 @@ namespace winMassFollow {
 					extern char* database;
 					int co;	
 					sqlite3_stmt* statement;
+					char *zErrMsg = 0;
 						
 					co = sqlite3_open(database, &db);
 					if(co)
@@ -157,62 +159,43 @@ namespace winMassFollow {
 					}
 					else
 					{
-						// get all the followers
+						/* get all the followers */
 						twitterGet twiGet;
 						string tbval;
 						MarshalString(tbValue,tbval);
-						string test;
-						test = twiGet.getAllFollowers(tbval);
-						MessageBox::Show(test.c_str());
+						string flw;
+						flw = twiGet.getAllFollowers(tbval);
+						MessageBox::Show(flw.c_str());
 						
-						// spliting string
+						/* spliting string */
+						vector<string> tabToInsert; 
 						string delimiter = ",";
 						size_t pos = 0;
 						string token;
-						while ((pos = test.find(delimiter)) != std::string::npos)
+						int vec =0;
+						while ((pos = flw.find(delimiter)) != std::string::npos)
 						{
-							token = test.substr(0, pos);
-							MessageBox::Show(token.c_str());
-							test.erase(0, pos + delimiter.length());
+							token = flw.substr(0, pos);
+							tabToInsert.push_back(token);
+							flw.erase(0, pos + delimiter.length());
 						}
-						
 
+						/* insert values in database (table: TOFOLLOW) */
+						for(vector<string>::size_type i=0;i < tabToInsert.size();i++)
+						{
+							/*
+							 //tabToInsert[i].c_str();
+							char* sql;
+							sql = "INSERT INTO TOFOLLOW (IDuser, ToFollowID, ToFollowUN) VALUES (1, '7653769', 'test')";
+							sqlite3_prepare( db, sql, -1, &statement, NULL);//preparing the statement
+							sqlite3_step( statement );//executing the statement
+							MessageBox::Show("Insertion effectuée ? ");
+							*/
+						} 
 
-						MessageBox::Show("Connexion à la base OK");
-						//	if (sqlite3_prepare_v2(db, "SELECT * FROM TOFOLLOW", -1, &statement, 0) == SQLITE_OK)
-						//		{
-						//			listToFollow->Items->Clear();
-						//			int cols = sqlite3_column_count(statement);
-						//			int result = 0;
-						//			int compt = 0;
-						//			while(true)
-						//			{
-						//				result = sqlite3_step(statement);
-						//				
-						//				if(result == SQLITE_ROW)
-						//				{
-						//					int colonne = 2;
-						//					string s = (char*)sqlite3_column_text(statement, colonne);
-						//					String* ch = new String(s.c_str());
-						//					listToFollow->Items->Add(ch);
-						//					compt++;
-						//				}
-						//				else
-						//				{
-						//					break;   
-						//				}
-						//			}
-						//			writeConsole(String::Concat(Convert::ToString(compt)," comptes en attente de follow"));
-						//			sqlite3_finalize(statement);
-						//			sqlite3_close(db);
-						//		}
-						//		else
-						//		{
-						//			// error gesture
-						//		}
-						}
-						this->tbAccountName->Text = "";
 					}
+						this->tbAccountName->Text = "";
+				}
 				
 			}
 
@@ -223,7 +206,18 @@ namespace winMassFollow {
 			   os = chars;
 			   Marshal::FreeHGlobal(IntPtr((void*)chars));
 			}
-
+/*
+static int callback(void *NotUsed, int argc, char **argv, char **azColName)
+			{
+			   int i;
+			   for(i=0; i<argc; i++)
+			   {
+				  printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+			   }
+			   printf("\n");
+			   return 0;
+			}
+*/
 
 	};
 }
