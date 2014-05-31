@@ -210,10 +210,7 @@ namespace winSettings {
 #pragma endregion
 
 	public: System::Void btValidateChanges_Click(System::Object* sender, System::EventArgs* e)
-		{
-			// here, the treatment for save all the user's changes 
-			// ...
-			
+		{			
 			this->Close();
 		}
 	};

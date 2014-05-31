@@ -165,7 +165,7 @@ namespace winMassFollow {
 						MarshalString(tbValue,tbval);
 						string flw;
 						flw = twiGet.getAllFollowers(tbval);
-						MessageBox::Show(flw.c_str());
+						//MessageBox::Show(flw.c_str());
 						
 						/* spliting string */
 						vector<string> tabToInsert; 
@@ -177,19 +177,37 @@ namespace winMassFollow {
 						{
 							token = flw.substr(0, pos);
 							tabToInsert.push_back(token);
+							//MessageBox::Show(token.c_str());
 							flw.erase(0, pos + delimiter.length());
 						}
 
 						/* insert values in database (table: TOFOLLOW) */
 						for(vector<string>::size_type i=0;i < tabToInsert.size();i++)
 						{
+							// now
+							time_t time = 0x3DE43B0C;
+							string username;
+							username = twiGet.getUserUsername(tabToInsert[i].c_str());
+
+							String* req;
+							String* req2;
+							req = String::Concat("INSERT INTO TOFOLLOW (IDuser, ToFollowID, ToFollowUN) VALUES (1,'", tabToInsert[i].c_str(),"','");
+							req2 = String::Concat(req, username.c_str(),"')");
+
+
+
 							/*
-							 //tabToInsert[i].c_str();
-							char* sql;
-							sql = "INSERT INTO TOFOLLOW (IDuser, ToFollowID, ToFollowUN) VALUES (1, '7653769', 'test')";
-							sqlite3_prepare( db, sql, -1, &statement, NULL);//preparing the statement
-							sqlite3_step( statement );//executing the statement
-							MessageBox::Show("Insertion effectuée ? ");
+							   rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+							   if( rc != SQLITE_OK )
+							   {
+								  sqlite3_free(zErrMsg);
+							   }
+							   else
+							   {
+								  fprintf(stdout, "Records created successfully\n");
+							   }
+							   sqlite3_close(db);
+							   return 0;
 							*/
 						} 
 
