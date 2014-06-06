@@ -193,23 +193,24 @@ namespace winMassFollow {
 							String* req2;
 							req = String::Concat("INSERT INTO TOFOLLOW (IDuser, ToFollowID, ToFollowUN) VALUES (1,'", tabToInsert[i].c_str(),"','");
 							req2 = String::Concat(req, username.c_str(),"')");
+							string r;
+							MarshalString(req2,r);
+							const char* requeteInsert = r.c_str();
+							/* here, the request is created, now we must insert the line in the database */
+ 
 
-
-
-							/*
-							   rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
-							   if( rc != SQLITE_OK )
-							   {
-								  sqlite3_free(zErrMsg);
-							   }
-							   else
-							   {
-								  fprintf(stdout, "Records created successfully\n");
-							   }
-							   sqlite3_close(db);
-							   return 0;
-							*/
+							int rc;
+							rc = sqlite3_exec(db, requeteInsert, 0, 0, &zErrMsg);
+							if( rc != SQLITE_OK )
+							{
+								sqlite3_free(zErrMsg);
+							}
+							else
+							{
+							   MessageBox::Show("Records created successfully");
+							}
 						} 
+						sqlite3_close(db);
 
 					}
 						this->tbAccountName->Text = "";
