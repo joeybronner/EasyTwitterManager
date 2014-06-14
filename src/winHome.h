@@ -398,7 +398,31 @@ namespace winHome {
 	private: System::Void btFollowAll_Click(System::Object* sender, System::EventArgs* e)
 			{
 				// here, the code to start the mass following thread
+				//delegate void MyInvokeDelegate();
+				System::Threading::Thread* t = new System::Threading::Thread(new System::Threading::ThreadStart(this, &windowHome::Login));
+				t->Start();
+				//Login();
 			}
+
+	public:	void Login()
+			{
+				  //this->btn_next->Enabled = false;
+
+				  //this->login_accounts_facebook->Enabled = false; //This gives an error probably because of accessing "this->"
+				  /*
+					if(this->listToFollow->SelectedItems->Count > 0)
+					{
+						writeConsole("Des éléments sont sélectionnés");
+					}
+					*/
+				for (int i=1;i<10;i++)
+				{
+					Sleep(1000);
+					MessageBox::Show("Test");
+					//this->consoleFooter->Items->Add(test);
+				}
+			}
+
 
 	
 	private: System::Void btStopFollow_Click(System::Object* sender, System::EventArgs* e)

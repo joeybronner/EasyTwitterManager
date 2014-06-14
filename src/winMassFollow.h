@@ -203,11 +203,13 @@ namespace winMassFollow {
 							rc = sqlite3_exec(db, requeteInsert, 0, 0, &zErrMsg);
 							if( rc != SQLITE_OK )
 							{
+								/* error */
 								sqlite3_free(zErrMsg);
 							}
 							else
 							{
-							   MessageBox::Show("Records created successfully");
+							   /* ok */
+							   //MessageBox::Show("Records created successfully");
 							}
 						} 
 						sqlite3_close(db);
