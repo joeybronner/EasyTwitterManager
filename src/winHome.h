@@ -60,7 +60,10 @@ namespace winHome {
 			/* get username */
 			extern twitCurl twitterObj;
 			extern string user;
+			extern int followers;
 			user = twitterObj.getTwitterUsername();
+			// followers = TO DO : récupéer le nombre de followers de l'identifiant connecté.
+			// afficher ça en grand ai milieu :)
 			writeConsole(String::Concat("Connecté en tant que : @", user.c_str()));
 			this->lbWelcome->Text = String::Concat("Bonjour @",user.c_str(),"!");
 		}
@@ -93,6 +96,9 @@ namespace winHome {
 		System::Windows::Forms::Button*			btFollowAll;
 		System::Windows::Forms::Button*			btAddToFollow;
 		System::Windows::Forms::Button*			btStopFollow;
+		System::Threading::Thread*				t;
+		System::Threading::Thread*				t2;
+		System::String*							accountToFollow;
 
 
 #pragma region Windows Form Designer generated code
@@ -395,32 +401,91 @@ namespace winHome {
 				}
 			 }
 	
+	
+
 	private: System::Void btFollowAll_Click(System::Object* sender, System::EventArgs* e)
 			{
 				// here, the code to start the mass following thread
-				//delegate void MyInvokeDelegate();
-				System::Threading::Thread* t = new System::Threading::Thread(new System::Threading::ThreadStart(this, &windowHome::Login));
-				t->Start();
-				//Login();
+				if (this->listToFollow->SelectedItems->Count < 1)
+				{
+					writeConsole("Veuillez sélectionner au moins un compte dans la liste.");
+				}
+				else
+				{
+					// get all the accounts
+					int nbToFollow = this->listToFollow->SelectedItems->Count;
+
+					if (MessageBox::Show(String::Concat("Cette action va lancer le traitement de ",nbToFollow.ToString()," comptes Twitter, êtes-vous sûr ?"),"Follow en masse", MessageBoxButtons::YesNo,MessageBoxIcon::Question)==::DialogResult::Yes)
+					{
+						for (int i = 0; i < nbToFollow ; i++)
+						{
+							Object* index = this->listToFollow->SelectedItems->Item[i];
+							accountToFollow = index->ToString();
+							string accountToFollowOld;
+
+							MarshalString(accountToFollow,accountToFollowOld);
+
+							twitterGet twiGet;
+							string IDToFollow = twiGet.getUserID(accountToFollowOld);
+
+							//int IDaccountToFollow = twitterObj.
+							//t = new System::Threading::Thread(new System::Threading::ThreadStart(this, &windowHome::FollowBoucle));
+							//t->Start();
+							FollowBoucle(IDToFollow, accountToFollow);
+							//writeConsole(String::Concat(IDToFollow.c_str(), " vient d'être suivi."));
+						}
+					}
+				}
+
 			}
 
-	public:	void Login()
+	public:	void FollowBoucle(string IDToFollow, String* accountToFollow)
 			{
-				  //this->btn_next->Enabled = false;
+				Sleep(2000);
+				extern twitCurl twitterObj;
+				twitterObj.friendshipCreate(IDToFollow, true);
+				supprimerEntreeBDD(accountToFollow);
+				writeConsole(String::Concat(accountToFollow, " a été suivi."));
+			}
 
-				  //this->login_accounts_facebook->Enabled = false; //This gives an error probably because of accessing "this->"
-				  /*
-					if(this->listToFollow->SelectedItems->Count > 0)
+	public: void supprimerEntreeBDD(String* accountToFollow)
+			{
+					/* database connection */
+					sqlite3* db;
+					extern char* database;
+					int co;	
+					sqlite3_stmt* statement;
+					char *zErrMsg = 0;
+					
+					co = sqlite3_open(database, &db);
+					if(co)
 					{
-						writeConsole("Des éléments sont sélectionnés");
+						writeConsole("Erreur de connexion à la base de données locale");
 					}
-					*/
-				for (int i=1;i<10;i++)
-				{
-					Sleep(1000);
-					MessageBox::Show("Test");
-					//this->consoleFooter->Items->Add(test);
-				}
+					else
+					{		
+						String* req;
+						req = String::Concat("DELETE FROM TOFOLLOW WHERE ToFollowUN = '", accountToFollow,"'");
+						string r;
+						MarshalString(req,r);
+						const char* requeteDelete = r.c_str();
+
+						int rc;
+						rc = sqlite3_exec(db, requeteDelete, 0, 0, &zErrMsg);
+						
+						/*
+						if( rc != SQLITE_OK )
+						{
+							sqlite3_free(zErrMsg);
+							writeConsole("Error");
+						}
+						else
+						{
+						   writeConsole("It works");
+						}
+						*/
+						sqlite3_close(db);
+					}
 			}
 
 
@@ -428,6 +493,9 @@ namespace winHome {
 	private: System::Void btStopFollow_Click(System::Object* sender, System::EventArgs* e)
 			{
 				// here, the code to stop the mass following thread
+				//t->Interrupt();
+				//t->Resume();
+				//TerminateThread
 			}
 
 
@@ -531,7 +599,37 @@ namespace winHome {
 				this->consoleFooter->Items->Add(initMsg);
 			}
 
-	
+/*
+private void ThreadProcSafe()
+{
+    // Wait two seconds to simulate some background work
+    // being done.
+    Thread.Sleep(2000);
+
+    string text = "Written by the background thread.";
+    // Check if this method is running on a different thread
+    // than the thread that created the control.
+    if (this.textBox1.InvokeRequired)
+    {
+        // It's on a different thread, so use Invoke.
+        SetTextCallback d = new SetTextCallback(SetText);
+        this.Invoke
+            (d, new object[] { text + " (Invoke)" });
+    }
+    else
+    {
+        // It's on the same thread, no need for Invoke
+        this.textBox1.Text = text + " (No Invoke)";
+    }
+}
+// This method is passed in to the SetTextCallBack delegate
+// to set the Text property of textBox1.
+private void SetText(string text)
+{
+    this.textBox1.Text = text;
+} 
+*/
+
 	private: void MarshalString ( String* s, string& os )
 			{
 			   using namespace Runtime::InteropServices;

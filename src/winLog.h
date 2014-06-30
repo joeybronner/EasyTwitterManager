@@ -140,7 +140,7 @@ namespace winLog {
 
 				if (system("ping www.google.com"))
 				{
-					MessageBox::Show("Erreur. Le programme nécessite une connexion à internet.");
+					MessageBox::Show("Erreur. Vérifiez votre connexion internet puis réessayez.");
 				}
 				else
 				{
