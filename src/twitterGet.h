@@ -47,6 +47,29 @@ public:
 				return replyMsg;
 			}
 
+	std::string getNbFollowers(string nom)
+			{ 
+				/* init */
+				replyMsg = "";
+				extern twitCurl twitterObj;
+
+				/* work */
+				if(twitterObj.userGet(nom, false))
+				{
+					twitterObj.getLastWebResponse( replyMsg );
+				}
+				else
+				{
+					replyMsg = "Erreur lors de la récupération de l'ID de l'utilisateur";
+				}
+				/*
+				unsigned pos = replyMsg.find("id_str"); 
+				string afterid = replyMsg.substr(pos+7);
+				replyMsg = ExtractString(afterid, "\"", "\"" );
+				*/
+				return replyMsg;
+			}
+
 	std::string getAllFollowers(string nom)
 			{
 				/* init */

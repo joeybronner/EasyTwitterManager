@@ -180,10 +180,17 @@ namespace winMassFollow {
 							//MessageBox::Show(token.c_str());
 							flw.erase(0, pos + delimiter.length());
 						}
-
+						
+						int cpt = 0;
 						/* insert values in database (table: TOFOLLOW) */
 						for(vector<string>::size_type i=0;i < tabToInsert.size();i++)
 						{
+
+							if (cpt > 50)
+							{
+								break;
+							}
+
 							// now
 							time_t time = 0x3DE43B0C;
 							string username;
@@ -210,6 +217,7 @@ namespace winMassFollow {
 							{
 							   /* ok */
 							   //MessageBox::Show("Records created successfully");
+								cpt = cpt + 1;
 							}
 						} 
 						sqlite3_close(db);

@@ -86,6 +86,7 @@ namespace winHome {
 		System::Windows::Forms::Button*			btLogin;
 		System::Windows::Forms::Button*			btRefresh;
 		System::Windows::Forms::Label*			lbWelcome;
+		System::Windows::Forms::Label*			nbFollowers;
 		/* New tweet */
 		System::Windows::Forms::Label*			lbNewTweet;
 		System::Windows::Forms::TextBox*		tbNewTweet;
@@ -99,6 +100,8 @@ namespace winHome {
 		System::Threading::Thread*				t;
 		System::Threading::Thread*				t2;
 		System::String*							accountToFollow;
+		/* Mass Message */
+		System::Windows::Forms::Label*			lbMassMessage;
 
 
 #pragma region Windows Form Designer generated code
@@ -143,6 +146,19 @@ namespace winHome {
 				this->lbWelcome->Size = System::Drawing::Size(94, 27);
 				this->lbWelcome->BackColor = System::Drawing::Color::SteelBlue;
 
+			// number of followers
+				this->nbFollowers = new System::Windows::Forms::Label();
+				this->nbFollowers->AutoSize = false;
+				this->nbFollowers->Font = new System::Drawing::Font(L"Open Sans", 22, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point);
+				this->nbFollowers->ForeColor = System::Drawing::Color::SteelBlue;
+				this->nbFollowers->Location = System::Drawing::Point(100, 245);
+				this->nbFollowers->Name = L"nbFollowers";
+				this->nbFollowers->Text = L"- followers";
+				this->nbFollowers->Size = System::Drawing::Size(300, 50);
+				this->nbFollowers->TextAlign = ContentAlignment::MiddleCenter;
+				this->nbFollowers->BackColor = System::Drawing::Color::WhiteSmoke;
+				
+
 			// wainting list label message (label)
 				this->lbWaitingList = new System::Windows::Forms::Label();
 				this->lbWaitingList->AutoSize = true;
@@ -152,6 +168,16 @@ namespace winHome {
 				this->lbWaitingList->Name = L"lbWaitingList";
 				this->lbWaitingList->Size = System::Drawing::Size(94, 27);
 				this->lbWaitingList->Text = L"Follow en masse";
+
+			// label direct mass message (label)
+				this->lbMassMessage = new System::Windows::Forms::Label();
+				this->lbMassMessage->AutoSize = true;
+				this->lbMassMessage->Font = new System::Drawing::Font(L"Open Sans", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point);
+				this->lbMassMessage->ForeColor = System::Drawing::Color::White;
+				this->lbMassMessage->Location = System::Drawing::Point(430, 220);
+				this->lbMassMessage->Name = L"lbMassMessage";
+				this->lbMassMessage->Size = System::Drawing::Size(94, 27);
+				this->lbMassMessage->Text = L"Message en masse";
 
 			// btLogin, to log in twitter using twitcurl
 				this->btLogin = new System::Windows::Forms::Button();
@@ -341,7 +367,9 @@ namespace winHome {
 				this->Controls->Add(this->btLogin);
 				this->Controls->Add(this->lbNewTweet);
 				this->Controls->Add(this->btAddToFollow);
+				this->Controls->Add(this->lbMassMessage);
 				this->Controls->Add(this->btStopFollow);
+				this->Controls->Add(this->nbFollowers);
 				this->Controls->Add(this->btRefresh);
 				this->ResumeLayout(false);
 				this->PerformLayout();
@@ -517,6 +545,14 @@ namespace winHome {
 				/* 2nd refresh : ... (database table: TABLENAME) */
 				// code...
 
+				/* 3th refresh : number of followers */
+
+				extern string user;
+				extern int followers;
+				followers = getFollowersCount(user);
+				MessageBox::Show(String::Concat("Nb de followers : ", followers.ToString()));;
+				this->nbFollowers->Text = String::Concat(followers.ToString(), " follower(s)");
+
 				/* end message */
 				writeConsole("Mise à jour effectuée avec succès");
 			}
@@ -670,10 +706,9 @@ private void SetText(string text)
 			{
 				extern twitCurl twitterObj; 
 				string replyMsg;
-				if(twitterObj.userGet(nom, true))
+				if(twitterObj.userGet(nom, false))
 				{
 					twitterObj.getLastWebResponse( replyMsg );
-					writeConsole(replyMsg.c_str());
 				}
 				else
 				{
