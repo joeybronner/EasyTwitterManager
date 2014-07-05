@@ -87,6 +87,8 @@ namespace winHome {
 		System::Windows::Forms::Button*			btRefresh;
 		System::Windows::Forms::Label*			lbWelcome;
 		System::Windows::Forms::Label*			nbFollowers;
+		System::Windows::Forms::Label*			nbFollowing;
+		System::Windows::Forms::Label*			tendance;
 		/* New tweet */
 		System::Windows::Forms::Label*			lbNewTweet;
 		System::Windows::Forms::TextBox*		tbNewTweet;
@@ -149,15 +151,34 @@ namespace winHome {
 			// number of followers
 				this->nbFollowers = new System::Windows::Forms::Label();
 				this->nbFollowers->AutoSize = false;
-				this->nbFollowers->Font = new System::Drawing::Font(L"Open Sans", 22, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point);
+				this->nbFollowers->Font = new System::Drawing::Font(L"Open Sans", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point);
 				this->nbFollowers->ForeColor = System::Drawing::Color::SteelBlue;
 				this->nbFollowers->Location = System::Drawing::Point(100, 245);
 				this->nbFollowers->Name = L"nbFollowers";
-				this->nbFollowers->Text = L"- followers";
+				this->nbFollowers->Text = L"- abonnés";
 				this->nbFollowers->Size = System::Drawing::Size(300, 50);
-				this->nbFollowers->TextAlign = ContentAlignment::MiddleCenter;
+				this->nbFollowers->TextAlign = ContentAlignment::MiddleLeft;
 				this->nbFollowers->BackColor = System::Drawing::Color::WhiteSmoke;
-				
+
+			// number of followings
+				this->nbFollowing = new System::Windows::Forms::Label();
+				this->nbFollowing->AutoSize = false;
+				this->nbFollowing->Font = new System::Drawing::Font(L"Open Sans", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point);
+				this->nbFollowing->ForeColor = System::Drawing::Color::SteelBlue;
+				this->nbFollowing->Location = System::Drawing::Point(100, 300);
+				this->nbFollowing->Name = L"nbFollowing";
+				this->nbFollowing->Text = L"- abonnements";
+				this->nbFollowing->Size = System::Drawing::Size(300, 50);
+				this->nbFollowing->TextAlign = ContentAlignment::MiddleLeft;
+				this->nbFollowing->BackColor = System::Drawing::Color::WhiteSmoke;
+
+			// tendance
+				this->tendance = new System::Windows::Forms::Label();
+				this->tendance->AutoSize = false;
+				this->tendance->Location = System::Drawing::Point(100, 355);
+				this->tendance->Name = L"nbFollowing";
+				this->tendance->Size = System::Drawing::Size(90, 90);
+				this->tendance->BackgroundImage = System::Drawing::Image::FromFile("../img/ratiogris.png");
 
 			// wainting list label message (label)
 				this->lbWaitingList = new System::Windows::Forms::Label();
@@ -363,7 +384,9 @@ namespace winHome {
 				this->Controls->Add(this->btFollowAll);
 				this->Controls->Add(this->lbWelcome);
 				this->Controls->Add(this->lbWaitingList);
+				this->Controls->Add(this->nbFollowing);
 				this->Controls->Add(this->listToFollow);
+				this->Controls->Add(this->tendance);
 				this->Controls->Add(this->btLogin);
 				this->Controls->Add(this->lbNewTweet);
 				this->Controls->Add(this->btAddToFollow);
@@ -429,8 +452,6 @@ namespace winHome {
 				}
 			 }
 	
-	
-
 	private: System::Void btFollowAll_Click(System::Object* sender, System::EventArgs* e)
 			{
 				// here, the code to start the mass following thread
@@ -467,6 +488,7 @@ namespace winHome {
 
 			}
 
+	
 	public:	void FollowBoucle(string IDToFollow, String* accountToFollow)
 			{
 				Sleep(2000);
@@ -537,6 +559,9 @@ namespace winHome {
 	
 	private: System::Void btRefresh_Click(System::Object* sender, System::EventArgs* e)
 			{
+				extern string user;
+				extern int followers;
+				extern int following;
 				/* all the refresh methods are called here */
 
 				/* 1st refresh : list to follow (database table: TOFOLLOW) */
@@ -546,12 +571,24 @@ namespace winHome {
 				// code...
 
 				/* 3th refresh : number of followers */
-
-				extern string user;
-				extern int followers;
 				followers = getFollowersCount(user);
-				MessageBox::Show(String::Concat("Nb de followers : ", followers.ToString()));;
-				this->nbFollowers->Text = String::Concat(followers.ToString(), " follower(s)");
+				this->nbFollowers->Text = String::Concat(followers.ToString(), " abonné(s)");
+
+				/* 4th refresh : number of followings */
+				following = getFollowingCount(user);
+				this->nbFollowing->Text = String::Concat(following.ToString(), " abonnement(s)");
+	
+				/* 5th refresh : graph image */
+				if (followers > following)
+				{
+					this->tendance->BackgroundImage = System::Drawing::Image::FromFile("../img/ratiovert.png");
+				}
+				else
+				{
+					this->tendance->BackgroundImage = System::Drawing::Image::FromFile("../img/ratiorouge.png");
+				}
+				
+
 
 				/* end message */
 				writeConsole("Mise à jour effectuée avec succès");
@@ -723,6 +760,26 @@ private void SetText(string text)
 				return count;
 			}
 
+	public: int getFollowingCount(string nom)
+			{
+				extern twitCurl twitterObj; 
+				string replyMsg;
+				if(twitterObj.userGet(nom, false))
+				{
+					twitterObj.getLastWebResponse( replyMsg );
+				}
+				else
+				{
+					replyMsg = "erreur";
+				}
+				
+				unsigned pos = replyMsg.find("friends_count"); 
+				string afterid = replyMsg.substr(pos+14);
+				replyMsg = ExtractString(afterid, ":", "," );
+				int count;
+				istringstream (replyMsg) >> count;
+				return count;
+			}
 
 
 
