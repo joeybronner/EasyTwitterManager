@@ -89,6 +89,7 @@ namespace winHome {
 		System::Windows::Forms::Label*			nbFollowers;
 		System::Windows::Forms::Label*			nbFollowing;
 		System::Windows::Forms::Label*			tendance;
+		System::Windows::Forms::Label*			etatRatio;
 		/* New tweet */
 		System::Windows::Forms::Label*			lbNewTweet;
 		System::Windows::Forms::TextBox*		tbNewTweet;
@@ -171,6 +172,18 @@ namespace winHome {
 				this->nbFollowing->Size = System::Drawing::Size(300, 50);
 				this->nbFollowing->TextAlign = ContentAlignment::MiddleLeft;
 				this->nbFollowing->BackColor = System::Drawing::Color::WhiteSmoke;
+
+			// etat ratio
+				this->etatRatio = new System::Windows::Forms::Label();
+				this->etatRatio->AutoSize = false;
+				this->etatRatio->Font = new System::Drawing::Font(L"Open Sans", 14, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point);
+				this->etatRatio->ForeColor = System::Drawing::Color::DarkRed;
+				this->etatRatio->Location = System::Drawing::Point(190, 355);
+				this->etatRatio->Name = L"etatRatio";
+				this->etatRatio->Text = L"Ratio en négatif \n -6,3";
+				this->etatRatio->Size = System::Drawing::Size(210, 45);
+				this->etatRatio->TextAlign = ContentAlignment::MiddleCenter;
+				
 
 			// tendance
 				this->tendance = new System::Windows::Forms::Label();
@@ -388,6 +401,7 @@ namespace winHome {
 				this->Controls->Add(this->listToFollow);
 				this->Controls->Add(this->tendance);
 				this->Controls->Add(this->btLogin);
+				this->Controls->Add(this->etatRatio);
 				this->Controls->Add(this->lbNewTweet);
 				this->Controls->Add(this->btAddToFollow);
 				this->Controls->Add(this->lbMassMessage);
