@@ -83,6 +83,7 @@ namespace winHome {
 		System::Windows::Forms::Button*			btInfos;
 		System::Windows::Forms::Button*			btLogin;
 		System::Windows::Forms::Button*			btRefresh;
+		System::Windows::Forms::Button*			btUnfollow;
 		System::Windows::Forms::Label*			lbWelcome;
 		System::Windows::Forms::Label*			nbFollowers;
 		System::Windows::Forms::Label*			nbFollowing;
@@ -175,10 +176,10 @@ namespace winHome {
 				this->etatRatio = new System::Windows::Forms::Label();
 				this->etatRatio->AutoSize = false;
 				this->etatRatio->Font = new System::Drawing::Font(L"Open Sans", 14, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point);
-				this->etatRatio->ForeColor = System::Drawing::Color::DarkRed;
+				this->etatRatio->ForeColor = System::Drawing::Color::WhiteSmoke;
 				this->etatRatio->Location = System::Drawing::Point(190, 355);
 				this->etatRatio->Name = L"etatRatio";
-				this->etatRatio->Text = L"Ratio en négatif";
+				this->etatRatio->Text = L"-";
 				this->etatRatio->Size = System::Drawing::Size(210, 90);
 				this->etatRatio->TextAlign = ContentAlignment::MiddleCenter;		
 
@@ -243,6 +244,21 @@ namespace winHome {
 				this->btRefresh->UseVisualStyleBackColor = false;
 				this->btRefresh->Click += new System::EventHandler(this, &windowHome::btRefresh_Click);
 
+			// btUnfollow, to refresh the screen
+				this->btUnfollow = new System::Windows::Forms::Button();
+				this->btUnfollow->BackColor = System::Drawing::Color::LightSkyBlue;	
+				this->btUnfollow->Image = System::Drawing::Image::FromFile("../img/ic_unfollow.png");
+				this->btUnfollow->Location = System::Drawing::Point(5, 165);
+				this->btUnfollow->Cursor = System::Windows::Forms::Cursors::Hand;
+				this->btUnfollow->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+				this->btUnfollow->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
+				this->btUnfollow->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
+				this->btUnfollow->FlatAppearance->BorderSize = 0;
+				this->btUnfollow->Name = L"btUnfollow";
+				this->btUnfollow->Size = System::Drawing::Size(90, 90);
+				this->btUnfollow->TabIndex = 3;
+				this->btUnfollow->UseVisualStyleBackColor = false;
+				this->btUnfollow->Click += new System::EventHandler(this, &windowHome::btUnfollow_Click);
 
 			// btInfos, why this app has been devlopped ? who ? etc.. 
 				this->btInfos = new System::Windows::Forms::Button();
@@ -258,6 +274,7 @@ namespace winHome {
 				this->btInfos->Size = System::Drawing::Size(90, 90);
 				this->btInfos->TabIndex = 3;
 				this->btInfos->UseVisualStyleBackColor = false;
+				this->btInfos->Click += new System::EventHandler(this, &windowHome::btInfos_Click);
 
 			// logo on the top of window
 				this->imageLogo = new System::Windows::Forms::PictureBox();
@@ -392,6 +409,7 @@ namespace winHome {
 				this->Controls->Add(this->btConfig);
 				this->Controls->Add(this->btInfos);
 				this->Controls->Add(this->btFollowAll);
+				this->Controls->Add(this->btUnfollow);
 				this->Controls->Add(this->lbWelcome);
 				this->Controls->Add(this->lbWaitingList);
 				this->Controls->Add(this->nbFollowing);
@@ -509,6 +527,47 @@ namespace winHome {
 				writeConsole(String::Concat(accountToFollow, " a été suivi."));
 			}
 
+ 	private: System::Void btUnfollow_Click(System::Object* sender, System::EventArgs* e)
+			{
+				// bool friendshipShow( std::string& userInfo /* in */, bool isUserId = false /* in */ );
+				extern twitCurl twitterObj;
+				extern string user;
+				twitterGet twiGet;
+
+				/* spliting string */
+				string flw;
+				flw = twiGet.getAllFollowing(user);
+				vector<string> tabToInsert; 
+				string delimiter = ",";
+				size_t pos = 0;
+				string token;
+				int vec =0;
+						while ((pos = flw.find(delimiter)) != std::string::npos)
+						{
+							token = flw.substr(0, pos);
+							tabToInsert.push_back(token);
+							flw.erase(0, pos + delimiter.length());
+						}
+						int cpt = 0;
+
+						for(vector<string>::size_type i=0;i < tabToInsert.size() ;i++)
+						{
+							if (cpt > 50)
+							{
+								break;
+							}
+								
+							//string username;
+							string username = twiGet.getUserUsername(tabToInsert[i].c_str());
+							string fback = twiGet.getFollowBackStatus(username);
+							if (fback == "false")
+							{
+								twitterObj.friendshipDestroy(username, false);
+								cpt++;
+							}
+						} 
+			 }
+
 	public: void supprimerEntreeBDD(String* accountToFollow)
 			{
 					/* database connection */
@@ -558,8 +617,6 @@ namespace winHome {
 				//t->Resume();
 				//TerminateThread
 			}
-
-
 	
 	private: System::Void btAddToFollow_Click(System::Object* sender, System::EventArgs* e)
 			{
@@ -633,6 +690,10 @@ namespace winHome {
 				wSettings->ShowDialog();
 			}
 
+	private: System::Void btInfos_Click(System::Object* sender, System::EventArgs* e)
+			 {
+				 MessageBox::Show("Développé par : Joey BRONNER\nEmail : joeybronner@gmail.com\nSources : https://github.com/joeybronner/EasyTwitterManager");
+			 }
 	
 	public: System::String* getDateTime()
 			{

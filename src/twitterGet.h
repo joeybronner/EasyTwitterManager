@@ -92,6 +92,28 @@ public:
 				return replyMsg;
 			}
 
+	std::string getAllFollowing(string nom)
+			{
+				/* init */
+				replyMsg = "";
+				nextCursor = "";
+				extern twitCurl twitterObj;
+
+				/* work */
+				string id = getUserID(nom);
+				if(twitterObj.friendsIdsGet(nextCursor, id, true))
+				{
+					twitterObj.getLastWebResponse(replyMsg);
+					/* get cleaned string with all the ids */
+					replyMsg = ExtractString(replyMsg, "[", "]" );
+				}
+				else
+				{
+					replyMsg = "Erreur lors de l'exécution de 'friendsIdsGet'";
+				}
+				return replyMsg;
+			}
+
 	std::string getUserUsername(string id)
 			{ 
 				/* init */
@@ -133,9 +155,20 @@ public:
 				}
 			}
 
+	std::string getFollowBackStatus(string user)
+			{
+				/* init */
+				replyMsg = "";
+				extern twitCurl twitterObj;
 
-
-
+				/* work */
+				twitterObj.friendshipShow(user, false);
+				twitterObj.getLastWebResponse(replyMsg);
+				unsigned pos = replyMsg.find("followed_by"); 
+				string afterid = replyMsg.substr(pos+12);
+				replyMsg = ExtractString(afterid, ":", "," );
+				return replyMsg;
+			}
 	
 	/* others */
 	string ExtractString( std::string source, std::string start, std::string end )
