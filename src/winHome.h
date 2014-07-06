@@ -237,7 +237,7 @@ namespace winHome {
 				this->btSendMessage->Size = System::Drawing::Size(20, 20);
 				this->btSendMessage->TabIndex = 3;
 				this->btSendMessage->UseVisualStyleBackColor = false;
-				//this->btSendMessage->Click += new System::EventHandler(this, &windowHome::btFollowAll_Click);
+				this->btSendMessage->Click += new System::EventHandler(this, &windowHome::btSendMessage_Click);
 				
 
 			// btLogin, to log in twitter using twitcurl
@@ -542,6 +542,48 @@ namespace winHome {
 
 			}
 
+	private: System::Void btSendMessage_Click(System::Object* sender, System::EventArgs* e)
+			 {
+				 // bool directMessageSend( std::string& userInfo, std::string& dMsg, bool isUserId = false);
+				if (MessageBox::Show("Etes-vous sûr de vouloir envoyer ce message à tous vos abonnés ?","Message en masse", MessageBoxButtons::YesNo,MessageBoxIcon::Question)==::DialogResult::Yes)
+				{
+					extern twitCurl twitterObj;
+					extern string user;
+					twitterGet twiGet;
+
+					/* spliting string */
+					string flw;
+					flw = twiGet.getAllFollowers(user);
+					vector<string> tabToInsert; 
+					string delimiter = ",";
+					size_t pos = 0;
+					string token;
+					int vec =0;
+							while ((pos = flw.find(delimiter)) != std::string::npos)
+							{
+								token = flw.substr(0, pos);
+								tabToInsert.push_back(token);
+								flw.erase(0, pos + delimiter.length());
+							}
+							int cpt = 0;
+
+							for(vector<string>::size_type i=0;i < tabToInsert.size() ;i++)
+							{		
+								string username = twiGet.getUserUsername(tabToInsert[i].c_str());
+								try
+								{
+									String* msgN = this->rtbMassMessage->Text;
+									string msgO;
+									MarshalString(msgN,msgO);
+									twitterObj.directMessageSend(username, msgO, false);
+									cpt++;
+								}
+								catch (Exception* e) {}
+							} 
+
+							MessageBox::Show(String::Concat("Nombre de msg envoyes : ", cpt.ToString()));
+				}
+			 }
 	
 	public:	void FollowBoucle(string IDToFollow, String* accountToFollow)
 			{
