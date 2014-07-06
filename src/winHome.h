@@ -62,8 +62,6 @@ namespace winHome {
 			extern string user;
 			extern int followers;
 			user = twitterObj.getTwitterUsername();
-			// followers = TO DO : récupéer le nombre de followers de l'identifiant connecté.
-			// afficher ça en grand ai milieu :)
 			writeConsole(String::Concat("Connecté en tant que : @", user.c_str()));
 			this->lbWelcome->Text = String::Concat("Bonjour @",user.c_str(),"!");
 		}
@@ -180,10 +178,9 @@ namespace winHome {
 				this->etatRatio->ForeColor = System::Drawing::Color::DarkRed;
 				this->etatRatio->Location = System::Drawing::Point(190, 355);
 				this->etatRatio->Name = L"etatRatio";
-				this->etatRatio->Text = L"Ratio en négatif \n -6,3";
-				this->etatRatio->Size = System::Drawing::Size(210, 45);
-				this->etatRatio->TextAlign = ContentAlignment::MiddleCenter;
-				
+				this->etatRatio->Text = L"Ratio en négatif";
+				this->etatRatio->Size = System::Drawing::Size(210, 90);
+				this->etatRatio->TextAlign = ContentAlignment::MiddleCenter;		
 
 			// tendance
 				this->tendance = new System::Windows::Forms::Label();
@@ -596,13 +593,15 @@ namespace winHome {
 				if (followers > following)
 				{
 					this->tendance->BackgroundImage = System::Drawing::Image::FromFile("../img/ratiovert.png");
+					this->etatRatio->ForeColor = System::Drawing::Color::DarkGreen;
+					this->etatRatio->Text = L"Ratio en positif";
 				}
 				else
 				{
 					this->tendance->BackgroundImage = System::Drawing::Image::FromFile("../img/ratiorouge.png");
+					this->etatRatio->ForeColor = System::Drawing::Color::DarkRed;
+					this->etatRatio->Text = L"Ratio en négatif";
 				}
-				
-
 
 				/* end message */
 				writeConsole("Mise à jour effectuée avec succès");
@@ -674,6 +673,14 @@ namespace winHome {
 	
 	private: System::Void btLogin_Click(System::Object* sender, System::EventArgs* e)
 			{
+				// delete the two txt files (secret and key)
+				
+				/*system("exec rm -r ../txt/twitterClient_token_key.txt");
+				system("exec rm -r ../txt/twitterClient_token_secret.txt");
+				system("exec pause");
+				*/
+
+				removeAllFiles();
 				windowLog* wLog = new windowLog();
 				wLog->ShowDialog();
 			}
@@ -716,7 +723,11 @@ private void SetText(string text)
     this.textBox1.Text = text;
 } 
 */
-
+	private: void removeAllFiles()
+			 {
+				remove( "../txt/twitterClient_token_key.txt" );
+				remove( "../txt/twitterClient_token_secret.txt" );
+			 }
 	private: void MarshalString ( String* s, string& os )
 			{
 			   using namespace Runtime::InteropServices;
@@ -765,7 +776,7 @@ private void SetText(string text)
 				{
 					replyMsg = "erreur";
 				}
-				
+
 				unsigned pos = replyMsg.find("followers_count"); 
 				string afterid = replyMsg.substr(pos+16);
 				replyMsg = ExtractString(afterid, ":", "," );

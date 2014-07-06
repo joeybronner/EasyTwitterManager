@@ -24,7 +24,7 @@ string replyMsg;
 char tmpBuf[1024];
 string user;
 string lang;
-int	followers;
-int	following;
+int followers;
+int following;
 char * database;
 
