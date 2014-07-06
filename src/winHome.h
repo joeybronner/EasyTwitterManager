@@ -104,6 +104,8 @@ namespace winHome {
 		System::String*							accountToFollow;
 		/* Mass Message */
 		System::Windows::Forms::Label*			lbMassMessage;
+		System::Windows::Forms::RichTextBox*	rtbMassMessage;
+		System::Windows::Forms::Button*			btSendMessage;
 
 
 #pragma region Windows Form Designer generated code
@@ -211,6 +213,33 @@ namespace winHome {
 				this->lbMassMessage->Size = System::Drawing::Size(94, 27);
 				this->lbMassMessage->Text = L"Message en masse";
 
+			// rtbMassMessage
+				this->rtbMassMessage = new System::Windows::Forms::RichTextBox();
+				this->rtbMassMessage->Location = System::Drawing::Point(430, 245);
+				this->rtbMassMessage->Name = L"rtbMassMessage";
+				this->rtbMassMessage->Size = System::Drawing::Size(180, 195);
+				this->rtbMassMessage->TabIndex = 6;
+				this->rtbMassMessage->Text = L"Hello,\nVoilà un exemple de message.\nA bientôt :)";
+				this->rtbMassMessage->MaxLength = 140;
+				this->rtbMassMessage->BorderStyle = System::Windows::Forms::BorderStyle::None;
+
+			// btFollowAll, start following all the list 
+				this->btSendMessage = new System::Windows::Forms::Button();
+				this->btSendMessage->BackColor = System::Drawing::Color::LightSkyBlue;	
+				this->btSendMessage->Image = System::Drawing::Image::FromFile("../img/mini_logo/bull.png");
+				this->btSendMessage->Location = System::Drawing::Point(510, 445);
+				this->btSendMessage->Cursor = System::Windows::Forms::Cursors::Hand;
+				this->btSendMessage->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+				this->btSendMessage->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
+				this->btSendMessage->FlatAppearance->MouseDownBackColor = System::Drawing::Color::SteelBlue;
+				this->btSendMessage->FlatAppearance->BorderSize = 0;
+				this->btSendMessage->Name = L"btSendMessage";
+				this->btSendMessage->Size = System::Drawing::Size(20, 20);
+				this->btSendMessage->TabIndex = 3;
+				this->btSendMessage->UseVisualStyleBackColor = false;
+				//this->btSendMessage->Click += new System::EventHandler(this, &windowHome::btFollowAll_Click);
+				
+
 			// btLogin, to log in twitter using twitcurl
 				this->btLogin = new System::Windows::Forms::Button();
 				this->btLogin->BackColor = System::Drawing::Color::LightSkyBlue;	
@@ -279,7 +308,6 @@ namespace winHome {
 			// logo on the top of window
 				this->imageLogo = new System::Windows::Forms::PictureBox();
 				this->imageLogo->BackColor = System::Drawing::Color::PowderBlue;
-				//this->imageLogo->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 				this->imageLogo->Location = System::Drawing::Point(100, 10);
 				this->imageLogo->Name = L"imageLogo";
 				this->imageLogo->Size = System::Drawing::Size(680, 120);
@@ -297,7 +325,6 @@ namespace winHome {
 				this->tbNewTweet->Size = System::Drawing::Size(500, 40);
 				this->tbNewTweet->TextAlign = System::Windows::Forms::HorizontalAlignment::Left;
 				this->tbNewTweet->MaxLength = 140;
-				//this->tbNewTweet->TabIndex = 5;
 
 			// button add tweet
 				this->btAddTweet = new System::Windows::Forms::Button();
@@ -323,8 +350,6 @@ namespace winHome {
 				this->lbNewTweet->Location = System::Drawing::Point(100, 185);
 				this->lbNewTweet->Name = L"lbNewTweet";
 				this->lbNewTweet->Size = System::Drawing::Size(94, 27);
-				//this->lbNewTweet->BackColor = System::Drawing::Color::SteelBlue;
-				//this->lbNewTweet->TabIndex = 4;
 				this->lbNewTweet->Text = L"Quoi de neuf ?";
 
 			// console footer
@@ -346,10 +371,8 @@ namespace winHome {
 				this->listToFollow->Name = L"listToFollow";
 				this->listToFollow->Size = System::Drawing::Size(150, 200);
 				this->listToFollow->Sorted = false;
-				//this->listToFollow->TabIndex = 2;
 				this->listToFollow->BorderStyle = System::Windows::Forms::BorderStyle::None;
 				this->listToFollow->ScrollAlwaysVisible = true;
-				//this->listToFollow->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
 				this->listToFollow->SelectionMode = System::Windows::Forms::SelectionMode::MultiExtended;
 
 			// btFollowAll, start following all the list 
@@ -416,11 +439,13 @@ namespace winHome {
 				this->Controls->Add(this->listToFollow);
 				this->Controls->Add(this->tendance);
 				this->Controls->Add(this->btLogin);
+				this->Controls->Add(this->btSendMessage);
 				this->Controls->Add(this->etatRatio);
 				this->Controls->Add(this->lbNewTweet);
 				this->Controls->Add(this->btAddToFollow);
 				this->Controls->Add(this->lbMassMessage);
 				this->Controls->Add(this->btStopFollow);
+				this->Controls->Add(this->rtbMassMessage);
 				this->Controls->Add(this->nbFollowers);
 				this->Controls->Add(this->btRefresh);
 				this->ResumeLayout(false);
