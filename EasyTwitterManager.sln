@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyTwitterManager", "Src\EasyTwitterManager.vcproj", "{732F06BF-BFFA-435F-AD08-E1EB92E3F44E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyTwitterManager", "src\EasyTwitterManager.vcproj", "{732F06BF-BFFA-435F-AD08-E1EB92E3F44E}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{9B9D0695-728E-4067-8F3B-9CA3B4143609}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +15,9 @@ Global
 		{732F06BF-BFFA-435F-AD08-E1EB92E3F44E}.Debug|Win32.Build.0 = Debug|Win32
 		{732F06BF-BFFA-435F-AD08-E1EB92E3F44E}.Release|Win32.ActiveCfg = Release|Win32
 		{732F06BF-BFFA-435F-AD08-E1EB92E3F44E}.Release|Win32.Build.0 = Release|Win32
+		{9B9D0695-728E-4067-8F3B-9CA3B4143609}.Debug|Win32.ActiveCfg = Debug
+		{9B9D0695-728E-4067-8F3B-9CA3B4143609}.Release|Win32.ActiveCfg = Release
+		{9B9D0695-728E-4067-8F3B-9CA3B4143609}.Release|Win32.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
