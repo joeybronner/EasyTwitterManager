@@ -3,7 +3,7 @@
 "VSVersion" = "3:800"
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
 "IsWebType" = "8:FALSE"
-"ProjectName" = "8:Setup"
+"ProjectName" = "8:EasyTwitterManager-Setup"
 "LanguageId" = "3:1036"
 "CodePage" = "3:1252"
 "UILanguageId" = "3:1036"
@@ -27,13 +27,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6F7F3EECBDFB4F45B155B828943FFC88"
-        "OwnerKey" = "8:_C1097A5F869E437C85B5CDC4A9495F04"
+        "MsmKey" = "8:_A897C4CEF9FA4CC58231AB1828C3EE97"
+        "OwnerKey" = "8:_CEF2320729BD475EB1974C10FC2CA894"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_C1097A5F869E437C85B5CDC4A9495F04"
+        "MsmKey" = "8:_CEF2320729BD475EB1974C10FC2CA894"
         "OwnerKey" = "8:_1FCD8E25E2B7471B9F0318E13D023A85"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -67,6 +67,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -83,6 +91,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -738,7 +754,7 @@
         }
         "MergeModule"
         {
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_6F7F3EECBDFB4F45B155B828943FFC88"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_A897C4CEF9FA4CC58231AB1828C3EE97"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
@@ -752,7 +768,7 @@
             "Feature" = "8:"
             "IsolateTo" = "8:"
             }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_C1097A5F869E437C85B5CDC4A9495F04"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_CEF2320729BD475EB1974C10FC2CA894"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
