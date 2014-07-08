@@ -12,6 +12,12 @@
 
 using namespace std;
 
+/*
+* 08/07/2014
+* Here, all global values used in the program execution
+* 
+**/
+
 /* closing app if true */
 bool endApp = false;
 

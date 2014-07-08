@@ -10,8 +10,6 @@
 #include <string>
 #include <ctime>
 #include <time.h>
-//#include "tinyxml.h"
-//#include "tinystr.h"
 
 
 #using <mscorlib.dll>
@@ -38,8 +36,6 @@ namespace winSettings {
 		windowSettings(void)
 		{
 			InitializeComponent();
-			//TiXmlDocument doc( "../xml/test.xml" );
-			//doc.LoadFile();
 		}
 
 	protected:
@@ -75,7 +71,6 @@ namespace winSettings {
 				this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 				this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedToolWindow;
 				this->Text = "Reglages";
-				//icon
 				Bitmap* imgIcon = new Bitmap( "../img/EasyTwitterManager.ico" );
 				IntPtr Hicon = imgIcon->GetHicon();
 				System::Drawing::Icon* iconETM = System::Drawing::Icon::FromHandle( Hicon );
@@ -89,7 +84,6 @@ namespace winSettings {
 				this->lbReglages->Location = System::Drawing::Point(10, 10);
 				this->lbReglages->Name = L"lbReglages";
 				this->lbReglages->Size = System::Drawing::Size(94, 27);
-				//this->lbReglages->TabIndex = 4;
 				this->lbReglages->Text = L"Reglages";
 
 			// IP proxy's address (label)
@@ -100,7 +94,6 @@ namespace winSettings {
 				this->lbIPproxy->Location = System::Drawing::Point(10, 100);
 				this->lbIPproxy->Name = L"lbIPproxy";
 				this->lbIPproxy->Size = System::Drawing::Size(94, 27);
-				//this->lbIPproxy->TabIndex = 4;
 				this->lbIPproxy->Text = L"Adresse IP du proxy:";
 
 			// textbox used to set up the proxy's IP address
@@ -118,7 +111,6 @@ namespace winSettings {
 				this->lbPortProxy->Location = System::Drawing::Point(10, 150);
 				this->lbPortProxy->Name = L"lbPortProxy";
 				this->lbPortProxy->Size = System::Drawing::Size(94, 27);
-				//this->lbPortProxy->TabIndex = 4;
 				this->lbPortProxy->Text = L"Port du proxy:";
 
 			// textbox used to set up the proxy's port
@@ -136,7 +128,6 @@ namespace winSettings {
 				this->lbUserProxy->Location = System::Drawing::Point(10, 200);
 				this->lbUserProxy->Name = L"lbUserProxy";
 				this->lbUserProxy->Size = System::Drawing::Size(94, 27);
-				//this->lbPortProxy->TabIndex = 4;
 				this->lbUserProxy->Text = L"Nom d'utilisateur :";
 
 			// textbox used to set up the proxy's user
@@ -154,7 +145,6 @@ namespace winSettings {
 				this->lbPswdProxy->Location = System::Drawing::Point(10, 250);
 				this->lbPswdProxy->Name = L"lbPswdProxy";
 				this->lbPswdProxy->Size = System::Drawing::Size(94, 27);
-				//this->lbPswdProxy->TabIndex = 4;
 				this->lbPswdProxy->Text = L"Mot de passe :";
 
 			// textbox used to set up the proxy's password
@@ -166,16 +156,6 @@ namespace winSettings {
 				this->tbPswdProxy->TabIndex = 3;
 
 			// button to save changes
-				//this->btValidateChanges = new System::Windows::Forms::Button();
-				//this->btValidateChanges->Location = System::Drawing::Point(130, 330);
-				//this->btValidateChanges->Name = L"btValidateChanges";
-				//this->btValidateChanges->Size = System::Drawing::Size(120, 30);
-				//this->btValidateChanges->TabIndex = 0;
-
-				//this->btValidateChanges->Text = L"Appliquer";
-				//this->btValidateChanges->UseVisualStyleBackColor = true;
-				//->btValidateChanges->Click += new System::EventHandler(this, &windowSettings::btValidateChanges_Click);
-				
 				this->btValidateChanges = new System::Windows::Forms::Button();
 				this->btValidateChanges->BackColor = System::Drawing::Color::LightSkyBlue;	
 				this->btValidateChanges->Image = System::Drawing::Image::FromFile("../img/ic_submit.png");
@@ -209,6 +189,11 @@ namespace winSettings {
 		}
 #pragma endregion
 
+	/* CLOSE
+	*
+	* Method used to close this window
+	*
+	**/
 	public: System::Void btValidateChanges_Click(System::Object* sender, System::EventArgs* e)
 		{			
 			this->Close();

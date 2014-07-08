@@ -63,7 +63,6 @@ namespace winPin {
 				this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 				this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedToolWindow;
 				this->Text = "Pin";
-				//icon
 				Bitmap* imgIcon = new Bitmap( "../img/EasyTwitterManager.ico" );
 				IntPtr Hicon = imgIcon->GetHicon();
 				System::Drawing::Icon* iconETM = System::Drawing::Icon::FromHandle(Hicon);
@@ -77,7 +76,6 @@ namespace winPin {
 				this->lbTexte->Location = System::Drawing::Point(10, 10);
 				this->lbTexte->Name = L"lbTexte";
 				this->lbTexte->Size = System::Drawing::Size(94, 27);
-				//this->lbTexte->TabIndex = 4;
 				this->lbTexte->Text = L"Entrez le PIN généré :";
 
 			// text box used to set up the pin auth
@@ -92,8 +90,6 @@ namespace winPin {
 
 			// btOK, to log in twitter using twitcurl
 				this->btOK = new System::Windows::Forms::Button();
-				//this->btOK->BackColor = System::Drawing::Color::LightSkyBlue;	
-				//this->btOK->Image = System::Drawing::Image::FromFile("../img/ic_login.png");
 				this->btOK->Text = "OK";
 				this->btOK->Location = System::Drawing::Point(75, 130);
 				this->btOK->Cursor = System::Windows::Forms::Cursors::Hand;
@@ -117,6 +113,11 @@ namespace winPin {
 				this->PerformLayout();
 		}
 #pragma endregion
+	/* OK BUTTON
+	*
+	* Method used to validate the pin added by the user
+	*
+	**/
 	public: System::Void btOK_Click(System::Object* sender, System::EventArgs* e)
 			{
 				if (this->tbPin->Text->Length > 0)
@@ -127,8 +128,12 @@ namespace winPin {
 					this->Close();
 				}
 			}
-
-void MarshalString ( String* s, string& os )
+	/* MARSHAL STRING
+	*
+	* Method used to cast the system String* into a strandart string
+	*
+	**/
+	void MarshalString ( String* s, string& os )
 			{
 			   using namespace Runtime::InteropServices;
 			   const char* chars = (const char*)(Marshal::StringToHGlobalAnsi(s)).ToPointer();

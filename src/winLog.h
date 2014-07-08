@@ -71,7 +71,6 @@ namespace winLog {
 				this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
 				this->ControlBox = false;
 				this->Text = "Easy Twitter Manager | Welcome";
-				//icon
 				Bitmap* imgIcon = new Bitmap( "../img/EasyTwitterManager.ico" );
 				IntPtr Hicon = imgIcon->GetHicon();
 				System::Drawing::Icon* iconETM = System::Drawing::Icon::FromHandle( Hicon );
@@ -117,7 +116,6 @@ namespace winLog {
 				this->lbWelcome->Location = System::Drawing::Point(10, 10);
 				this->lbWelcome->Name = L"lbWelcome";
 				this->lbWelcome->Size = System::Drawing::Size(94, 27);
-				//this->lbWelcome->TabIndex = 4;
 				this->lbWelcome->Text = L"Welcome,";
 
 			// adding the controls to the window
@@ -130,11 +128,22 @@ namespace winLog {
 		}
 #pragma endregion
 	
+	/* EXIT
+	*
+	* Method used to close this window
+	*
+	**/
 	private: System::Void btExit_Click(System::Object* sender, System::EventArgs* e)
 			{
 				exit(1);
 			}
 	
+	/* LOG IN
+	*
+	* Method used to log in
+	* Check if internet connection is OK
+	*
+	**/
 	private: System::Void btLogin_Click(System::Object* sender, System::EventArgs* e)
 			{
 
@@ -177,21 +186,15 @@ namespace winLog {
 							MarshalString(secret,myOAuthAccessTokenSecret);
 
 							if( myOAuthAccessTokenKey.size() && myOAuthAccessTokenSecret.size() )
-							{
-								/* If we already have these keys, then no need to go through auth again */
-								//writeConsole("Clés récupérées avec succès.");
-								//writeConsole(String::Concat("Key   : ", myOAuthAccessTokenKey.c_str()));
-								//writeConsole(String::Concat("Secret: ", myOAuthAccessTokenSecret.c_str()));
-								
+							{	
 								/* authentification */
 								twitterObj.getOAuth().setOAuthTokenKey( myOAuthAccessTokenKey );
 								twitterObj.getOAuth().setOAuthTokenSecret( myOAuthAccessTokenSecret );
 							}
 							
 						}
-						else {
-							//writeConsole("Aucune ancienne connexion détectée.");
-							
+						else
+						{
 							/* get request token key and secret */
 							std::string authUrl;
 							twitterObj.oAuthRequestToken( authUrl );
@@ -204,8 +207,6 @@ namespace winLog {
 								// to get the pin value
 								windowPin* wPin = new windowPin();
 								wPin->ShowDialog();
-
-								//writeConsole(String::Concat("PIN entré : ",tmpStr.c_str()));
 
 								// auth with the key entered by the user
 								twitterObj.getOAuth().setOAuthPin( tmpStr );
@@ -234,43 +235,31 @@ namespace winLog {
 								oAuthTokenKeyOut.close();
 								oAuthTokenSecretOut.close();
 							}
-							else {
-								//writeConsole("L'initialisation requiert une redirection vers internet.");
+							else
+							{
 								return;
 							}
 
 						}
 
 						// check if connection if ok
-
 						if( twitterObj.accountVerifyCredGet() )
 						{
-							//twitterObj.getLastWebResponse( replyMsg );
-							
-							//replyMsg = twitterObj.timelineUserGet(true,false,1,"", false);
-							//writeConsole("Vous êtes connecté!");
-							//activeDesactiveElements(true, "logout");
+
 						}
 						else
 						{
 							twitterObj.getLastCurlError( replyMsg );
-							//writeConsole(replyMsg.c_str());
 						}
-
-						/*
-							CONNECTION ESTABLISHED !!! 
-							ìnit message on console
-						*/
+						
 						//writeConsole("Fin de l'initialisation de l'API Twitter.");
 						extern bool loggedIn;
 						loggedIn = true;
 						this->Close();
 
 					}
-					catch (int e) {
-						/* error message */
-						//writeConsole("Erreur lors de l'initialisation de l'API Twitter.");
-						//writeConsole(e.ToString());
+					catch (int e)
+					{
 						MessageBox::Show("Erreur.");
 					}
 					
@@ -278,6 +267,11 @@ namespace winLog {
 				
 			}
 	
+	/* MARSHAL STRING
+	*
+	* Method used to cast a system String* into a standart string
+	*
+	**/
 	void MarshalString ( String* s, string& os )
 			{
 			   using namespace Runtime::InteropServices;

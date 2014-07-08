@@ -71,7 +71,6 @@ namespace winMassFollow {
 				this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 				this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedToolWindow;
 				this->Text = "Follow en masse";
-				//icon
 				Bitmap* imgIcon = new Bitmap( "../img/EasyTwitterManager.ico" );
 				IntPtr Hicon = imgIcon->GetHicon();
 				System::Drawing::Icon* iconETM = System::Drawing::Icon::FromHandle( Hicon );
@@ -128,11 +127,21 @@ namespace winMassFollow {
 		}
 #pragma endregion
 
+	/* VALIDATE
+	*
+	* Method used to close this window
+	*
+	**/
 	public: System::Void btValidateChanges_Click(System::Object* sender, System::EventArgs* e)
 		{			
 			this->Close();
 		}
 
+	/* LOAD LIST FOLLOWERS
+	*
+	* Method used to load all the followers from another twitter account (textbox content)
+	*
+	**/
 	public: System::Void btLoadListFollowers_Click(System::Object* sender, System::EventArgs* e)
 			{
 
@@ -165,7 +174,6 @@ namespace winMassFollow {
 						MarshalString(tbValue,tbval);
 						string flw;
 						flw = twiGet.getAllFollowers(tbval);
-						//MessageBox::Show(flw.c_str());
 						
 						/* spliting string */
 						vector<string> tabToInsert; 
@@ -177,7 +185,6 @@ namespace winMassFollow {
 						{
 							token = flw.substr(0, pos);
 							tabToInsert.push_back(token);
-							//MessageBox::Show(token.c_str());
 							flw.erase(0, pos + delimiter.length());
 						}
 						
@@ -203,7 +210,6 @@ namespace winMassFollow {
 							string r;
 							MarshalString(req2,r);
 							const char* requeteInsert = r.c_str();
-							/* here, the request is created, now we must insert the line in the database */
  
 
 							int rc;
@@ -216,7 +222,6 @@ namespace winMassFollow {
 							else
 							{
 							   /* ok */
-							   //MessageBox::Show("Records created successfully");
 								cpt = cpt + 1;
 							}
 						} 
@@ -228,6 +233,11 @@ namespace winMassFollow {
 				
 			}
 
+	/* MARSHAL STRING
+	*
+	* Method used to cast system String* into standart string
+	*
+	**/
 	void MarshalString ( String* s, string& os )
 			{
 			   using namespace Runtime::InteropServices;
@@ -235,76 +245,6 @@ namespace winMassFollow {
 			   os = chars;
 			   Marshal::FreeHGlobal(IntPtr((void*)chars));
 			}
-/*
-static int callback(void *NotUsed, int argc, char **argv, char **azColName)
-			{
-			   int i;
-			   for(i=0; i<argc; i++)
-			   {
-				  printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-			   }
-			   printf("\n");
-			   return 0;
-			}
-*/
 
 	};
 }
-
-
-/*  -------------------- RESERVE -------------------- */
-
-			//// SQLite database.
-			//// http://www.tutorialspoint.com/sqlite/sqlite_c_cpp.htm
-			//// http://www.codeproject.com/Tips/378808/Accessing-a-SQLite-Database-with-Cplusplus
-			//	
-			//	
-				//extern bool loggedIn;
-				//if (loggedIn)
-				//{
-				//	/* database connection */
-				//	sqlite3* db;
-				//	extern char* database;
-				//	int co;	
-				//	sqlite3_stmt* statement;
-				//	
-				//	co = sqlite3_open(database, &db);
-				//	if(co)
-				//	{
-				//		writeConsole("Erreur de connexion à la base de données locale");
-				//	}
-				//	else
-				//	{
-				//		if (sqlite3_prepare_v2(db, "SELECT * FROM TOFOLLOW", -1, &statement, 0) == SQLITE_OK)
-				//		{
-				//			listToFollow->Items->Clear();
-				//			int cols = sqlite3_column_count(statement);
-				//			int result = 0;
-				//			int compt = 0;
-				//			while(true)
-				//			{
-				//				result = sqlite3_step(statement);
-				//				
-				//				if(result == SQLITE_ROW)
-				//				{
-				//					int colonne = 2;
-				//					string s = (char*)sqlite3_column_text(statement, colonne);
-				//					String* ch = new String(s.c_str());
-				//					listToFollow->Items->Add(ch);
-				//					compt++;
-				//				}
-				//				else
-				//				{
-				//					break;   
-				//				}
-				//			}
-				//			writeConsole(String::Concat(Convert::ToString(compt)," comptes en attente de follow"));
-				//			sqlite3_finalize(statement);
-				//			sqlite3_close(db);
-				//		}
-				//		else
-				//		{
-				//			// error gesture
-				//		}
-				//	}
-				//}

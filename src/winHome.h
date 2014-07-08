@@ -118,7 +118,6 @@ namespace winHome {
 				this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 				this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
 				this->Text = "Easy Twitter Manager | Home";
-				//icon
 				Bitmap* imgIcon = new Bitmap( "../img/EasyTwitterManager.ico" );
 				IntPtr Hicon = imgIcon->GetHicon();
 				System::Drawing::Icon* iconETM = System::Drawing::Icon::FromHandle( Hicon );
@@ -238,7 +237,6 @@ namespace winHome {
 				this->btSendMessage->TabIndex = 3;
 				this->btSendMessage->UseVisualStyleBackColor = false;
 				this->btSendMessage->Click += new System::EventHandler(this, &windowHome::btSendMessage_Click);
-				
 
 			// btLogin, to log in twitter using twitcurl
 				this->btLogin = new System::Windows::Forms::Button();
@@ -452,7 +450,11 @@ namespace winHome {
 				this->PerformLayout();
 		}
 #pragma endregion
-
+	/* REFRESH MASS FOLLOWING LIST
+	*
+	* Method used to refresh the full list of potential following people
+	*
+	**/
 	private: void refresh_ListFollow()
 			 {
 				extern bool loggedIn;
@@ -506,6 +508,11 @@ namespace winHome {
 				}
 			 }
 	
+	/* FOLLOW ALL Pt 1
+	*
+	* Method used to start the following of people
+	*
+	**/
 	private: System::Void btFollowAll_Click(System::Object* sender, System::EventArgs* e)
 			{
 				// here, the code to start the mass following thread
@@ -531,20 +538,36 @@ namespace winHome {
 							twitterGet twiGet;
 							string IDToFollow = twiGet.getUserID(accountToFollowOld);
 
-							//int IDaccountToFollow = twitterObj.
-							//t = new System::Threading::Thread(new System::Threading::ThreadStart(this, &windowHome::FollowBoucle));
-							//t->Start();
 							FollowBoucle(IDToFollow, accountToFollow);
-							//writeConsole(String::Concat(IDToFollow.c_str(), " vient d'être suivi."));
 						}
 					}
 				}
 
 			}
 
+	/* FOLLOW ALL Pt 2
+	*
+	* Method used to start the following of people
+	*
+	**/
+	public:	void FollowBoucle(string IDToFollow, String* accountToFollow)
+			{
+				// wait 2 seconds between all following because of twitter security
+				Sleep(2000);
+				
+				extern twitCurl twitterObj;
+				twitterObj.friendshipCreate(IDToFollow, true);
+				supprimerEntreeBDD(accountToFollow);
+				writeConsole(String::Concat(accountToFollow, " a été suivi."));
+			}			
+		
+	/* SEND MASS MESSAGE METHOD
+	*
+	* Method used to send a message to all your followers
+	*
+	**/
 	private: System::Void btSendMessage_Click(System::Object* sender, System::EventArgs* e)
 			 {
-				 // bool directMessageSend( std::string& userInfo, std::string& dMsg, bool isUserId = false);
 				if (MessageBox::Show("Etes-vous sûr de vouloir envoyer ce message à tous vos abonnés ?","Message en masse", MessageBoxButtons::YesNo,MessageBoxIcon::Question)==::DialogResult::Yes)
 				{
 					extern twitCurl twitterObj;
@@ -581,22 +604,17 @@ namespace winHome {
 								catch (Exception* e) {}
 							} 
 
-							MessageBox::Show(String::Concat("Nombre de msg envoyes : ", cpt.ToString()));
+							writeConsole(String::Concat("Nombre de msg envoyes : ", cpt.ToString()));
 				}
 			 }
-	
-	public:	void FollowBoucle(string IDToFollow, String* accountToFollow)
-			{
-				Sleep(2000);
-				extern twitCurl twitterObj;
-				twitterObj.friendshipCreate(IDToFollow, true);
-				supprimerEntreeBDD(accountToFollow);
-				writeConsole(String::Concat(accountToFollow, " a été suivi."));
-			}
 
+	/* UNFOLLOW
+	*
+	* Method used to unfollow all twitter account in your following and not followers
+	*
+	**/
  	private: System::Void btUnfollow_Click(System::Object* sender, System::EventArgs* e)
 			{
-				// bool friendshipShow( std::string& userInfo /* in */, bool isUserId = false /* in */ );
 				extern twitCurl twitterObj;
 				extern string user;
 				twitterGet twiGet;
@@ -635,6 +653,11 @@ namespace winHome {
 						} 
 			 }
 
+	/* DELETE DATABASE ENTRY
+	*
+	* Method used to delete an entry in the database
+	*
+	**/
 	public: void supprimerEntreeBDD(String* accountToFollow)
 			{
 					/* database connection */
@@ -660,60 +683,56 @@ namespace winHome {
 						int rc;
 						rc = sqlite3_exec(db, requeteDelete, 0, 0, &zErrMsg);
 						
-						/*
-						if( rc != SQLITE_OK )
-						{
-							sqlite3_free(zErrMsg);
-							writeConsole("Error");
-						}
-						else
-						{
-						   writeConsole("It works");
-						}
-						*/
 						sqlite3_close(db);
 					}
 			}
 
 
-	
+	/* STOP FOLLOWING EXECUTION
+	*
+	* Not used for the moment
+	*
+	**/
 	private: System::Void btStopFollow_Click(System::Object* sender, System::EventArgs* e)
 			{
 				// here, the code to stop the mass following thread
-				//t->Interrupt();
-				//t->Resume();
-				//TerminateThread
 			}
 	
+	/* OPEN MASS FOLLOW WINDOW
+	*
+	* Method used to open the "mass follow" window
+	*
+	**/
 	private: System::Void btAddToFollow_Click(System::Object* sender, System::EventArgs* e)
 			{
 				windowMassFollow* wMassFollow = new windowMassFollow();
 				wMassFollow->ShowDialog();
 			}
 
-	
+	/* REFRESH / REPAINT METHOD
+	*
+	* Method used to refresh all the data on the main window
+	*
+	**/
 	private: System::Void btRefresh_Click(System::Object* sender, System::EventArgs* e)
 			{
-				extern string user;
-				extern int followers;
-				extern int following;
+				extern string 	user;
+				extern int 		followers;
+				extern int 		following;
 				/* all the refresh methods are called here */
 
 				/* 1st refresh : list to follow (database table: TOFOLLOW) */
 				refresh_ListFollow();
 
-				/* 2nd refresh : ... (database table: TABLENAME) */
-				// code...
-
-				/* 3th refresh : number of followers */
+				/* 2th refresh : number of followers */
 				followers = getFollowersCount(user);
 				this->nbFollowers->Text = String::Concat(followers.ToString(), " abonné(s)");
 
-				/* 4th refresh : number of followings */
+				/* 3th refresh : number of followings */
 				following = getFollowingCount(user);
 				this->nbFollowing->Text = String::Concat(following.ToString(), " abonnement(s)");
 	
-				/* 5th refresh : graph image */
+				/* 4th refresh : graph image */
 				if (followers > following)
 				{
 					this->tendance->BackgroundImage = System::Drawing::Image::FromFile("../img/ratiovert.png");
@@ -730,7 +749,12 @@ namespace winHome {
 				/* end message */
 				writeConsole("Mise à jour effectuée avec succès");
 			}
-				
+		
+	/* ADD NEW TWEET
+	*
+	* Method used to send a new tweet on the social network
+	*
+	**/		
 	private: System::Void btAddTweet_Click(System::Object* sender, System::EventArgs* e)
 			{
 				extern twitCurl twitterObj;
@@ -750,18 +774,32 @@ namespace winHome {
 				}
 			}
 
-	
+	/* OPEN SETTINGS WINDOW
+	*
+	* Method used to open the settings window
+	*
+	**/
 	private: System::Void btConfig_Click(System::Object* sender, System::EventArgs* e)
 			{
 				windowSettings* wSettings = new windowSettings();
 				wSettings->ShowDialog();
 			}
 
+	/* OPEN INFO WINDOW
+	*
+	* Method used to open the information window
+	*
+	**/
 	private: System::Void btInfos_Click(System::Object* sender, System::EventArgs* e)
 			 {
 				 MessageBox::Show("Développé par : Joey BRONNER\nEmail : joeybronner@gmail.com\nSources : https://github.com/joeybronner/EasyTwitterManager");
 			 }
 	
+	/* GET DATETIME
+	*
+	* Method used to return the actual datetime
+	*
+	**/
 	public: System::String* getDateTime()
 			{
 				/* initializing with the current hour and date */
@@ -798,22 +836,23 @@ namespace winHome {
 				return retour;
 			}
 
-	
+	/* LOG IN / LOG OUT
+	*
+	* Method used to log in or out your twitter account
+	*
+	**/
 	private: System::Void btLogin_Click(System::Object* sender, System::EventArgs* e)
 			{
-				// delete the two txt files (secret and key)
-				
-				/*system("exec rm -r ../txt/twitterClient_token_key.txt");
-				system("exec rm -r ../txt/twitterClient_token_secret.txt");
-				system("exec pause");
-				*/
-
 				removeAllFiles();
 				windowLog* wLog = new windowLog();
 				wLog->ShowDialog();
 			}
 
-	
+	/* WRITE CONSOLE
+	*
+	* Method used to write some logs in the console
+	*
+	**/
 	public: void writeConsole(String* msg)
 			{
 				String* currentDate = getDateTime();
@@ -821,41 +860,22 @@ namespace winHome {
 				this->consoleFooter->Items->Add(initMsg);
 			}
 
-/*
-private void ThreadProcSafe()
-{
-    // Wait two seconds to simulate some background work
-    // being done.
-    Thread.Sleep(2000);
-
-    string text = "Written by the background thread.";
-    // Check if this method is running on a different thread
-    // than the thread that created the control.
-    if (this.textBox1.InvokeRequired)
-    {
-        // It's on a different thread, so use Invoke.
-        SetTextCallback d = new SetTextCallback(SetText);
-        this.Invoke
-            (d, new object[] { text + " (Invoke)" });
-    }
-    else
-    {
-        // It's on the same thread, no need for Invoke
-        this.textBox1.Text = text + " (No Invoke)";
-    }
-}
-// This method is passed in to the SetTextCallBack delegate
-// to set the Text property of textBox1.
-private void SetText(string text)
-{
-    this.textBox1.Text = text;
-} 
-*/
+	/* REMOVE FILES
+	*
+	* Method used to remove the token and secret from a user when he logout
+	*
+	**/
 	private: void removeAllFiles()
 			 {
 				remove( "../txt/twitterClient_token_key.txt" );
 				remove( "../txt/twitterClient_token_secret.txt" );
 			 }
+			 
+	/* MARSHAL STRING
+	*
+	* Method used cast a String* into a string 
+	*
+	**/	 
 	private: void MarshalString ( String* s, string& os )
 			{
 			   using namespace Runtime::InteropServices;
@@ -864,6 +884,11 @@ private void SetText(string text)
 			   Marshal::FreeHGlobal(IntPtr((void*)chars));
 			}
 
+	/* EXTRACT STRING
+	*
+	* Method used to extract some string from a large text
+	*
+	**/
 	private: string ExtractString( std::string source, std::string start, std::string end )
 			{
 				std::string::size_type startIndex = source.find( start );
@@ -881,6 +906,11 @@ private void SetText(string text)
 				 return source.substr( startIndex, endIndex - startIndex );
 			}
 
+	/* SET USERNAME
+	*
+	* Method used to set the logged in account into the twitter API
+	*
+	**/
 	public: void setUsername()
 			{
 				extern twitCurl twitterObj;
@@ -892,6 +922,11 @@ private void SetText(string text)
 				twitterObj.setTwitterUsername(username);
 			}
 
+	/* FOLLOWERS COUNT
+	*
+	* Method used to return the number of followers
+	*
+	**/
 	public: int getFollowersCount(string nom)
 			{
 				extern twitCurl twitterObj; 
@@ -913,6 +948,11 @@ private void SetText(string text)
 				return count;
 			}
 
+	/* FOLLOWING COUNT
+	*
+	* Method used to return the number of following
+	*
+	**/
 	public: int getFollowingCount(string nom)
 			{
 				extern twitCurl twitterObj; 
@@ -989,10 +1029,5 @@ private void SetText(string text)
 
 
 */
-
-	/*
-
-	*/
-
 	};
 }

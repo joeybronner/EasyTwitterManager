@@ -15,16 +15,13 @@ private:
     std::string replyMsg;
 	std::string nextCursor;
 	
-    
 public:
 
-	//void setup(std::string )
- //   {
- //       setUser(userName, passWord);
- //       setConsumer(consumerKey, consumerSecret);
- //       requestToken();
- //   }
-
+	/* GET USER ID
+	*
+	* Method used to the ID user from his name
+	*
+	**/
 	std::string getUserID(string nom)
 			{ 
 				/* init */
@@ -47,6 +44,11 @@ public:
 				return replyMsg;
 			}
 
+	/* GET NB OF FOLLOWERS
+	*
+	* Method used to return the number of followers
+	*
+	**/
 	std::string getNbFollowers(string nom)
 			{ 
 				/* init */
@@ -62,14 +64,14 @@ public:
 				{
 					replyMsg = "Erreur lors de la récupération de l'ID de l'utilisateur";
 				}
-				/*
-				unsigned pos = replyMsg.find("id_str"); 
-				string afterid = replyMsg.substr(pos+7);
-				replyMsg = ExtractString(afterid, "\"", "\"" );
-				*/
 				return replyMsg;
 			}
-
+			
+	/* GET ALL FOLLOWERS
+	*
+	* Method used to get the list of all followers
+	*
+	**/
 	std::string getAllFollowers(string nom)
 			{
 				/* init */
@@ -91,7 +93,12 @@ public:
 				}
 				return replyMsg;
 			}
-
+			
+	/* GET ALL FOLLOWING
+	*
+	* Method used to get the list of all followings
+	*
+	**/
 	std::string getAllFollowing(string nom)
 			{
 				/* init */
@@ -114,6 +121,11 @@ public:
 				return replyMsg;
 			}
 
+	/* GET USERNAME 
+	*
+	* Method used to get the username with his unique ID
+	*
+	**/
 	std::string getUserUsername(string id)
 			{ 
 				/* init */
@@ -136,6 +148,11 @@ public:
 				return replyMsg;
 			}
 
+	/* FOLLOW SOMEONE
+	*
+	* Method used to follow someone with his ID
+	*
+	**/
 	std::string followByID(string id)
 			{
 				/* init */
@@ -155,6 +172,11 @@ public:
 				}
 			}
 
+	/* GET FOLLOWBACK STATUS
+	*
+	* Method used to know if anothe ruser is following you or not
+	*
+	**/
 	std::string getFollowBackStatus(string user)
 			{
 				/* init */
@@ -170,7 +192,11 @@ public:
 				return replyMsg;
 			}
 	
-	/* others */
+	/* EXTRACT STRING
+	*
+	* Method used to extract a string from a large text
+	*
+	**/
 	string ExtractString( std::string source, std::string start, std::string end )
 			{
 				std::string::size_type startIndex = source.find( start );
