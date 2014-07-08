@@ -66,7 +66,7 @@ namespace winMassFollow {
 		{
 			// main form settings
 				this->components = new System::ComponentModel::Container();
-				this->Size = System::Drawing::Size(400,400);
+				this->Size = System::Drawing::Size(350,180);
 				this->BackColor = System::Drawing::Color::LightSkyBlue;
 				this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 				this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedToolWindow;
@@ -81,7 +81,7 @@ namespace winMassFollow {
 				this->tbAccountName = new System::Windows::Forms::TextBox();
 				this->tbAccountName->BorderStyle = System::Windows::Forms::BorderStyle::None;
 				this->tbAccountName->Font = new System::Drawing::Font(L"Open Sans", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point);
-				this->tbAccountName->Location = System::Drawing::Point(100, 105);
+				this->tbAccountName->Location = System::Drawing::Point(10, 55);
 				this->tbAccountName->Name = L"tbAccountName";
 				this->tbAccountName->Size = System::Drawing::Size(100, 40);
 				this->tbAccountName->TextAlign = System::Windows::Forms::HorizontalAlignment::Left;
@@ -89,7 +89,7 @@ namespace winMassFollow {
 			// btLoadListFollowers, general app settings
 				this->btLoadListFollowers = new System::Windows::Forms::Button();
 				this->btLoadListFollowers->BackColor = System::Drawing::Color::LightSkyBlue;	
-				this->btLoadListFollowers->Location = System::Drawing::Point(250, 105);
+				this->btLoadListFollowers->Location = System::Drawing::Point(115, 55);
 				this->btLoadListFollowers->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->btLoadListFollowers->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 				this->btLoadListFollowers->FlatAppearance->MouseOverBackColor = System::Drawing::Color::SteelBlue;
@@ -107,7 +107,7 @@ namespace winMassFollow {
 				this->btValidateChanges = new System::Windows::Forms::Button();
 				this->btValidateChanges->BackColor = System::Drawing::Color::LightSkyBlue;	
 				this->btValidateChanges->Image = System::Drawing::Image::FromFile("../img/ic_submit.png");
-				this->btValidateChanges->Location = System::Drawing::Point(150, 280);
+				this->btValidateChanges->Location = System::Drawing::Point(250, 25);
 				this->btValidateChanges->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->btValidateChanges->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 				this->btValidateChanges->FlatAppearance->MouseOverBackColor = System::Drawing::Color::LightSkyBlue;
